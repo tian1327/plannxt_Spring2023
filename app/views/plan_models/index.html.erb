@@ -59,7 +59,7 @@
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.created_at %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.updated_at %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> 
-                  <%= link_to "Draw Panel", edit_plan_model_path(plan_model) %> /
+                  <%= link_to "Draw Panel", "/plan_models/"+plan_model.id.to_s+"/draw_panel" %> /
                   <% if Current.user.level.present? and Current.user.level >= 3 %>
                   <%= link_to "View Raw Data", plan_model %> /
                   <% end %>

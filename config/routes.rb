@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   resources :plan_models
   get "plan_models/:id/edit_admin", to: "plan_models#edit_admin", as: 'edit_admin'
   
+  get "plan_models/:id/draw_panel", to: "plan_models#draw_panel"
+  
   
   
   # plan_models -> return json

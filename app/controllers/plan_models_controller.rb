@@ -75,6 +75,7 @@ class PlanModelsController < ApplicationController
     if @plan_model.save
       redirect_to edit_plan_model_path(@plan_model)
       #redirect_to edit_page_path
+      #redirect_to draw_panel
     else
       render :new, status: :unprocessable_entity
     end
@@ -98,15 +99,33 @@ class PlanModelsController < ApplicationController
   
   def edit
     @plan_model = PlanModel.find(params[:id])
-    #render inline: File.read('frontend/Untitled-1.html')
     render file: 'frontend/drawPanel.html', layout: false
+    #render inline: File.read('frontend/Untitled-1.html')
+    #redirect_to edit_plan_model_path(@plan_model)
+    #
+    # if @plan_model.update(fix_params)
+    #   #render file: 'frontend/drawPanel.html', layout: false
+    #   #redirect_to edit_page_path
+    # else
+    #   #render :new, status: :unprocessable_entity
+    # end
+  end
+  
+  def draw_panel
+    @plan_model = PlanModel.find(params[:id])
+    @extra1_dict = JSON.parse(@plan_model.extra1)
+    #render file: 'frontend/drawPanel.html', layout: false
   end
   
   def update
+    paras = fix_params
     @plan_model = PlanModel.find(params[:id])
-    if @plan_model.update(fix_params)
-      flash[:notice] = "#{@plan_model.name} was successfully updated."
-      redirect_to @plan_model
+    #logger.info "start patch"
+    
+    if @plan_model.update(paras)
+      #flash[:notice] = "#{@plan_model.name} was successfully updated."
+      #redirect_to @plan_model
+      redirect_to edit_plan_model_path(@plan_model)
     else
       render :edit, status: :unprocessable_entity
     end
