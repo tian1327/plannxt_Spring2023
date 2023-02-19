@@ -1,6 +1,6 @@
 # CSCE606 - Project Plannxt
 
-Team Spring 2023
+**Team Spring 2023**
 
 [[Deployed App on Heroku](https://plannxt.herokuapp.com/)]
 
@@ -92,7 +92,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * check production logs to analyze bugs `heroku logs`
 
 ---
-(Content below are from the Team Spring 2022)
+**(Content below are from the Team Spring 2022)**
 
 Environment:
 
