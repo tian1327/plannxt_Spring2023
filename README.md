@@ -15,7 +15,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 
 * Install PostgreSQL
   * `sudo apt-get update`
-  * `sudo apt-getinstall postgresql postgresql-contrib libpq-dev`
+  * `sudo apt-get install postgresql postgresql-contrib libpq-dev`
   * PostgreSQL may require to create a role to allow rails to connect to the Postgre database. In AWS cloud9 ubuntu system, we executed `sudo -u postgres createuser --interactive ubuntu`
 
 * Clone the latest git repo
