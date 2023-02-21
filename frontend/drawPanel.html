@@ -59,28 +59,28 @@
         <div class="row border-bottom white-bg dashboard-header">
             <div id="panel" class="row">
                 <!-- table -->
-                <div id="table" class="col-lg-4" style="max-height: 400px; max-width: 300px; overflow: scroll;">
-                    <table id="tableItems" border="1" cellspacing="0" class="table table-hover no-margins">
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>setup_start</th>
-                                <th>setup_end</th>
-                                <th>breakdown_start</th>
-                                <th>breakdown_end</th>
-                                <th>owner</th>
-                                <th>finished</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableItemsBody">
+                <!--<div id="table" class="col-lg-4" style="max-height: 400px; max-width: 300px; overflow: scroll;">-->
+                <!--    <table id="tableItems" border="1" cellspacing="0" class="table table-hover no-margins">-->
+                <!--        <thead>-->
+                <!--            <tr>-->
+                <!--                <th>id</th>-->
+                <!--                <th>name</th>-->
+                <!--                <th>setup_start</th>-->
+                <!--                <th>setup_end</th>-->
+                <!--                <th>breakdown_start</th>-->
+                <!--                <th>breakdown_end</th>-->
+                <!--                <th>owner</th>-->
+                <!--                <th>finished</th>-->
+                <!--            </tr>-->
+                <!--        </thead>-->
+                <!--        <tbody id="tableItemsBody">-->
 
-                        </tbody>
-                    </table>
-                </div>
+                <!--        </tbody>-->
+                <!--    </table>-->
+                <!--</div>-->
                 <!-- canvas -->
                 <div id="canvas_div" class="canvas col-lg-6"
-                    style="max-height: 400px; max-width: 600px; overflow: scroll;" ondrop="drop_handler(event);" ,
+                    style="max-height: 400px; width: 1000px; overflow: scroll;" ondrop="drop_handler(event);" ,
                     ondragover="dragover_handler(event);">
                     <canvas id="dest_copy" height="1000px" width="1000px"></canvas>
                 </div>
@@ -181,7 +181,35 @@
                 </div>
 
             </div>
+
         </div>
+        
+        <div class="row border-bottom white-bg dashboard-header">
+            <div id="panel" class="row">
+        
+                <!-- table -->
+                <div id="table" class="col-lg-4" style="max-height: 350px; width: 1000px; overflow-x: auto; overflow-y: scroll;">
+                    <table id="tableItems" border="1" cellspacing="0" class="table table-hover no-margins">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>name</th>
+                                <th>setup_start</th>
+                                <th>setup_end</th>
+                                <th>breakdown_start</th>
+                                <th>breakdown_end</th>
+                                <th>owner</th>
+                                <th>finished</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableItemsBody">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>    
+        </div>
+        
     </div>
     <script src="drawPanel.js"></script>
     <script src="jquery-3.6.0.min.js"></script>
