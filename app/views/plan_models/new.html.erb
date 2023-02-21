@@ -17,72 +17,19 @@
 				    <%= form.text_field :name, :class => "input_big" %>
 				  </div>
 				  <h3>Event Days: Setup through Breakdown</h3>
+				  <h4>Step : Start Day: Start Time: End Day: End Time : Dependency</h4>
 				
 				  
 				<div>
-					<%= form.label :day1, "Day 1", :class => "label" %> &nbsp
-					<%= form.date_field :day1_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day1_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day1_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day1_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour6, :class => "input_small" %> 
-				</div>
-				<div>
-					<%= form.label :day2, "Day 2", :class => "label" %> &nbsp
-					<%= form.date_field :day2_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day2_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day2_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day2_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour6, :class => "input_small" %> 
-				</div>
-				<div>
-					<%= form.label :day3, "Day 3", :class => "label" %> &nbsp
-					<%= form.date_field :day3_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day3_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day3_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day3_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour6, :class => "input_small" %> 
-				</div>
-				<div>
-					<%= form.label :day1, "Day 4", :class => "label" %> &nbsp
-					<%= form.date_field :day4_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day4_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day4_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day4_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour6, :class => "input_small" %> 
-				</div>
+				  <%= form.label :step1, "Step1", :class => "label" %> &nbsp
+				  <%= form.date_field :day1_date, :class => "input_date"%> &nbsp
+				  <%= form.time_field :day1_hour1, :class => "input_date" %> &nbsp
+				  <%= form.date_field :day2_date, :class => "input_date"%> &nbsp
+				  <%= form.time_field :day1_hour1, :class => "input_date" %> &nbsp
+				  <%= form.select :dependency, ["None",1,2,3], :class => "input_small"%> &nbsp
+				  <button onclick="addRow()">Add Row</button>
+
+			    </div>
 				<div> &nbsp</div>
 				
 				<div>
