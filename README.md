@@ -36,7 +36,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 
 * To preview the web app in Cloud9
   * Click preview, most likely you will get “IP address mismatch” error
-  * Open file `/config/environments/development.rb`, add/update `config.hosts << "70a0625f822f476cb80d58e8fb3cd5dc.vfs.cloud9.us-east-2.amazonaws.com"`
+  * Open file `/config/environments/development.rb`, add/update `config.hosts << "YOUR_ADDRESS"`, you can find "YOUR_ADDRESS" from the Cloud9 prompt
   * Run `rails server`
   * Click preview, and click upper right to open a new browser tab to view the app
 
