@@ -1107,9 +1107,9 @@ let canvasHeight = canvas.height;
 // plan is a global variable
 window.onload = function(){
 
-    let tmp = "{\"items\":{\"0\":{\"item_id\":0,\"layer\":\"furniture\",\"name\":\"couch\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"chu\",\"type\":\"couch\",\"pos_x\":80,\"pos_y\":40,\"width\":40,\"length\":40},\"11\":{\"item_id\":11,\"layer\":\"top\",\"name\":\"triangle_room\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"zhang\",\"type\":\"triangle_room\",\"pos_x\":400,\"pos_y\":300,\"width\":30,\"length\":40},\"14\":{\"item_id\":14,\"layer\":\"top\",\"name\":\"rect_room\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"youli\",\"type\":\"round_room\",\"pos_x\":280,\"pos_y\":120,\"width\":150,\"length\":150}},\"creator\":\"zhang\", \"current_id\":\"16\"}";
+    // let tmp = "{\"items\":{\"0\":{\"item_id\":0,\"layer\":\"furniture\",\"name\":\"couch\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"chu\",\"type\":\"couch\",\"pos_x\":80,\"pos_y\":40,\"width\":40,\"length\":40},\"11\":{\"item_id\":11,\"layer\":\"top\",\"name\":\"triangle_room\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"zhang\",\"type\":\"triangle_room\",\"pos_x\":400,\"pos_y\":300,\"width\":30,\"length\":40},\"14\":{\"item_id\":14,\"layer\":\"top\",\"name\":\"rect_room\",\"setup_start\":\"04/28/13:00\",\"setup_duration\":\"1:00\",\"breakdown_start\":\"04/28/13:00\",\"breakdown_duration\":\"1:00\",\"owner\":\"youli\",\"type\":\"round_room\",\"pos_x\":280,\"pos_y\":120,\"width\":150,\"length\":150}},\"creator\":\"zhang\", \"current_id\":\"16\"}";
     // firstly, try to get data (JSON) from local cache, if cannot find the required data, then get it from the server
-    console.log("loading");
+    // console.log("loading");
     // console.log(JSON.parse(tmp));
     // call the interface from server
     getJSON();
