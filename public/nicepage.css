@@ -10894,6 +10894,7 @@ section.u-image:not(.u-hover-box),
 .u-layout-col > *,
 .u-layout-row > * {
   display: flex;
+  margin: auto;
 }
 .u-layout-col,
 .u-layout-row {
