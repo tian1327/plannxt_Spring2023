@@ -11,46 +11,54 @@
 				
 				
 				
-				<%= form_with model: @plan_model do |form| %>
+				<%= form_with model: @plan_model, local: true do |f| %>
 				  <div>
-				    <%= form.label :name, "Plan Name", :class => "label" %>
-				    <%= form.text_field :name, :class => "input_big" %>
+				    <%= f.label :name, "Plan Name", :class => "label" %>
+				    <%= f.text_field :name, :class => "input_big" %>
 				  </div>
 				  <h3>Event Days: Setup through Breakdown</h3>
-				  <h4>Step : Start Day: Start Time: End Day: End Time : Dependency</h4>
 				
-				  
-				<div>
-				  <%= form.label :step1, "Step1", :class => "label" %> &nbsp
-				  <%= form.date_field :day1_date, :class => "input_date"%> &nbsp
-				  <%= form.time_field :day1_hour1, :class => "input_date" %> &nbsp
-				  <%= form.date_field :day2_date, :class => "input_date"%> &nbsp
-				  <%= form.time_field :day1_hour1, :class => "input_date" %> &nbsp
-				  <%= form.select :dependency, ["None",1,2,3], :class => "input_small"%> &nbsp
-				  <button onclick="addRow()">Add Row</button>
+				
+				<table class ='table'>
+				  <thead>
+				  <tr>
+				  <th></th>
+				  <th>Step Name</th>
+				  <th>Start Day</th>
+				  <th>Start Time</th>
+				  <th>End Day</th>
+				  <th>End Time</th>
+				  </tr>
+				  </thead>
+				  </table>
 
-			    </div>
+				  <%= f.fields_for :eventsteps do |builder| %>
+					<%= render 'eventstep', f: builder %>
+					<% end %>
+
+				
+
 				<div> &nbsp</div>
 				
 				<div>
 					Dimensions of the Venue (approximate): &nbsp
-					<%= form.select :scale, ["Feet", "Meter"]%>
+					<%= f.select :scale, ["Feet", "Meter"]%>
 					&nbsp 
 					Length:&nbsp
-					<%= form.number_field :length, :class => "input_small" %> &nbsp 
+					<%= f.number_field :length, :class => "input_small" %> &nbsp 
 					Width:&nbsp
-					<%= form.number_field :width, :class => "input_small" %> &nbsp 
+					<%= f.number_field :width, :class => "input_small" %> &nbsp 
 				</div>
 
 				<div> &nbsp</div>
 				<div> &nbsp</div>
+				<div>
+				<%= link_to_add_row 'Add Steps',f, :eventsteps %>
+				</div>
 				  <div>
-				    <%= form.submit "Open PLAN TEMPLATE", :class => "submit_button" %>
+				    <%= f.submit "Open PLAN TEMPLATE", :class => "submit_button" %>
 				  </div>
 				<% end %>
-
-				
-
 
 </div>
 </div>

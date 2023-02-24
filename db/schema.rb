@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_21_091511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "eventsteps", force: :cascade do |t|
+    t.bigint "plan_model_id", null: false
+    t.string "name"
+    t.date "start_date"
+    t.time "start_time"
+    t.date "end_date"
+    t.time "end_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_model_id"], name: "index_eventsteps_on_plan_model_id"
+  end
 
   create_table "plan_models", force: :cascade do |t|
     t.string "name"
@@ -44,4 +56,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
     t.index ["email"], name: "index_users_on_email"
   end
 
+  add_foreign_key "eventsteps", "plan_models"
 end

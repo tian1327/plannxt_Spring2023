@@ -21,6 +21,7 @@ class PlanModelsController < ApplicationController
   
   def new
     @plan_model = PlanModel.new
+    @plan_model.eventsteps
   end
   
   def fix_params
@@ -71,9 +72,11 @@ class PlanModelsController < ApplicationController
   end
 
   def create
-    @plan_model = PlanModel.new(fix_params)
+    #@plan_model = PlanModel.new(fix_params)
+    @plan_model = PlanModel.new(plan_model_data)
     if @plan_model.save
       redirect_to edit_plan_model_path(@plan_model)
+      puts "new object created"
       #redirect_to edit_page_path
       #redirect_to draw_panel
     else
@@ -162,12 +165,25 @@ class PlanModelsController < ApplicationController
     end
   end
   
+
+  def link_to_add_row(name, form, association,**args)
+    new_object = form.object.send(association).klass.new
+    id = new_obj.object.id
+    fields = form.fields_for :association do |builder|
+        render(association.to_s.singularize, form: builder)
+    end
+    link_to(name, '#', class: "add_fields" + args[:class], data: {id: id, fields: fields.gsub("\n","")})
+end
   private
     def plan_model_data
       if Current.user
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3).merge(creator: Current.user.id)
+        #params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, eventsteps_attributes :[:id, :plan_model_id, :name, :start_date, :start_time, :end_date,:end_time]).merge(creator: Current.user.id)
+        params.require(:plan_model).permit(:name, 
+                                                eventsteps_attributes:[:id, :plan_model_id, :name, :start_date, :start_time, :end_date,:end_time]).merge(creator: Current.user.id)
       else
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3)
+        #params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, eventsteps_attributes :[:id, :plan_model_id, :name, :start_date, :start_time, :end_date,:end_time])
+        params.require(:plan_model).permit(:name, 
+                                                eventsteps_attributes:[:id, :plan_model_id, :name, :start_date, :start_time, :end_date,:end_time])
       end
     end
 end
