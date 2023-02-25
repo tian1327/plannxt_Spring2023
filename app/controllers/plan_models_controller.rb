@@ -100,10 +100,6 @@ class PlanModelsController < ApplicationController
   def edit
     @plan_model = PlanModel.find(params[:id])
     render :drawPanel
-    # render file: 'frontend/drawPanel.html', layout: false
-    #render inline: File.read('frontend/Untitled-1.html')
-    #redirect_to edit_plan_model_path(@plan_model)
-    #
     # if @plan_model.update(fix_params)
     #   #render file: 'frontend/drawPanel.html', layout: false
     #   #redirect_to edit_page_path
