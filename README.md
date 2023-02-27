@@ -9,7 +9,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 
 ### To run in development environment
 
-* Install ruby-3.1.0 using Ruby version manager
+* Install ruby-3.2.0 using Ruby version manager
   * `rvm get stable`
   * `rvm install "ruby-3.2.0"`
   * `rvm use 3.2.0`
