@@ -11,7 +11,8 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 
 * Install ruby-3.1.0 using Ruby version manager
   * `rvm get stable`
-  * `rvm install "ruby-3.1.0"`
+  * `rvm install "ruby-3.2.0"`
+  * `rvm use 3.2.0`
 
 * Install PostgreSQL
   * `sudo apt-get update`
