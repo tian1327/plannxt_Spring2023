@@ -10,9 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_28_233445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "event_steps", force: :cascade do |t|
+    t.string "Num"
+    t.string "StartDay"
+    t.string "StartTime"
+    t.string "EndTime"
+    t.bigint "plan_model_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "Break1start"
+    t.string "Break1end"
+    t.string "Break2start"
+    t.string "Break2end"
+    t.index ["plan_model_id"], name: "index_event_steps_on_plan_model_id"
+  end
+
+  create_table "eventsteps", force: :cascade do |t|
+    t.bigint "plan_model_id", null: false
+    t.string "name"
+    t.date "start_date"
+    t.time "start_time"
+    t.date "end_date"
+    t.time "end_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plan_model_id"], name: "index_eventsteps_on_plan_model_id"
+  end
 
   create_table "plan_models", force: :cascade do |t|
     t.string "name"
@@ -44,4 +71,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
     t.index ["email"], name: "index_users_on_email"
   end
 
+  add_foreign_key "event_steps", "plan_models"
+  add_foreign_key "eventsteps", "plan_models"
 end
