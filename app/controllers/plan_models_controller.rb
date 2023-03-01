@@ -21,6 +21,8 @@ class PlanModelsController < ApplicationController
   
   def new
     @plan_model = PlanModel.new
+    @plan_model.event_steps.build
+    
   end
   
   def fix_params
@@ -71,7 +73,7 @@ class PlanModelsController < ApplicationController
   end
 
   def create
-    @plan_model = PlanModel.new(fix_params)
+    @plan_model = PlanModel.new(plan_model_data)
     if @plan_model.save
       redirect_to edit_plan_model_path(@plan_model)
       #redirect_to edit_page_path
@@ -162,9 +164,9 @@ class PlanModelsController < ApplicationController
   private
     def plan_model_data
       if Current.user
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3).merge(creator: Current.user.id)
+        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :BreakTime]).merge(creator: Current.user.id)
       else
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3)
+        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3,event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :BreakTime])
       end
     end
 end
