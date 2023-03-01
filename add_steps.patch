@@ -1,0 +1,276 @@
+diff --git a/app/controllers/plan_models_controller.rb b/app/controllers/plan_models_controller.rb
+index a544136..3bf9be7 100644
+--- a/app/controllers/plan_models_controller.rb
++++ b/app/controllers/plan_models_controller.rb
+@@ -21,6 +21,8 @@ class PlanModelsController < ApplicationController
+   
+   def new
+     @plan_model = PlanModel.new
++    @plan_model.event_steps.build
++    
+   end
+   
+   def fix_params
+@@ -71,7 +73,7 @@ class PlanModelsController < ApplicationController
+   end
+ 
+   def create
+-    @plan_model = PlanModel.new(fix_params)
++    @plan_model = PlanModel.new(plan_model_data)
+     if @plan_model.save
+       redirect_to edit_plan_model_path(@plan_model)
+       #redirect_to edit_page_path
+@@ -165,9 +167,9 @@ class PlanModelsController < ApplicationController
+   private
+     def plan_model_data
+       if Current.user
+-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3).merge(creator: Current.user.id)
++        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :BreakTime]).merge(creator: Current.user.id)
+       else
+-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3)
++        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3,event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :BreakTime])
+       end
+     end
+ end
+\ No newline at end of file
+diff --git a/app/helpers/application_helper.rb b/app/helpers/application_helper.rb
+index de6be79..1a2a9a8 100644
+--- a/app/helpers/application_helper.rb
++++ b/app/helpers/application_helper.rb
+@@ -1,2 +1,17 @@
+ module ApplicationHelper
++    def link_to_add_fields(name, f, association)
++        ## create a new object from the association (:product_variants)
++        new_object = f.object.send(association).klass.new
++    
++        ## just create or take the id from the new created object
++        id = new_object.object_id
++    
++        ## create the fields form
++        fields = f.fields_for(association, new_object, child_index: id) do |builder|
++            render(association.to_s.singularize + "_fields", f: builder)
++        end
++        ## pass down the link to the fields form
++        link_to(name, '#', class: 'add_fields', data: {id: id, fields: fields.gsub("\n", "")})
++    
++       end
+ end
+diff --git a/app/models/plan_model.rb b/app/models/plan_model.rb
+index 03a3d01..4dc1322 100644
+--- a/app/models/plan_model.rb
++++ b/app/models/plan_model.rb
+@@ -1,2 +1,4 @@
+ class PlanModel < ApplicationRecord
++    has_many :event_steps, dependent: :destroy
++    accepts_nested_attributes_for :event_steps,allow_destroy: true
+ end
+diff --git a/app/views/plan_models/new.html.erb b/app/views/plan_models/new.html.erb
+index bf0753b..1bf3e16 100644
+--- a/app/views/plan_models/new.html.erb
++++ b/app/views/plan_models/new.html.erb
+@@ -17,72 +17,22 @@
+ 				    <%= form.text_field :name, :class => "input_big" %>
+ 				  </div>
+ 				  <h3>Event Days: Setup through Breakdown</h3>
+-				
+-				  
+-				<div>
+-					<%= form.label :day1, "Day 1", :class => "label" %> &nbsp
+-					<%= form.date_field :day1_date, :class => "input_date"%> &nbsp
+-					Hours 
+-					<%= form.number_field :day1_hour1, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day1_hour2, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day1_hour3, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day1_hour4, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day1_hour5, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day1_hour6, :class => "input_small" %> 
+-				</div>
+ 				<div>
+-					<%= form.label :day2, "Day 2", :class => "label" %> &nbsp
+-					<%= form.date_field :day2_date, :class => "input_date"%> &nbsp
+-					Hours 
+-					<%= form.number_field :day2_hour1, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day2_hour2, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day2_hour3, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day2_hour4, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day2_hour5, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day2_hour6, :class => "input_small" %> 
++					Start Adding steps by clicking Add Steps 
+ 				</div>
+ 				<div>
+-					<%= form.label :day3, "Day 3", :class => "label" %> &nbsp
+-					<%= form.date_field :day3_date, :class => "input_date"%> &nbsp
+-					Hours 
+-					<%= form.number_field :day3_hour1, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day3_hour2, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day3_hour3, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day3_hour4, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day3_hour5, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day3_hour6, :class => "input_small" %> 
++					Step-Number|| Start Day||Start Time||End Time||Break1Start||Break1End||Break2Start||Break2End
+ 				</div>
++
+ 				<div>
+-					<%= form.label :day1, "Day 4", :class => "label" %> &nbsp
+-					<%= form.date_field :day4_date, :class => "input_date"%> &nbsp
+-					Hours 
+-					<%= form.number_field :day4_hour1, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day4_hour2, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day4_hour3, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day4_hour4, :class => "input_small" %> 
+-					Break
+-					<%= form.number_field :day4_hour5, :class => "input_small" %> 
+-					to
+-					<%= form.number_field :day4_hour6, :class => "input_small" %> 
+-				</div>
++				    <!--
++					<%= form.fields_for :event_steps do |f| %>
++					<%= render 'event_step_fields', f: f%>
++					<% end %>
++					-->
++					<%= link_to_add_fields "Add Steps", form, :event_steps %>
++			    </div>
++
+ 				<div> &nbsp</div>
+ 				
+ 				<div>
+@@ -102,6 +52,25 @@
+ 				  </div>
+ 				<% end %>
+ 
++				<script>
++
++				$('form').on('click', '.remove-fields', function(event) {
++				  console.log('clicked')
++					$(this).prev('input[type=hidden]').val('1');
++					$(this).closest('fieldset').hide();
++					return event.preventDefault();
++				  });
++				
++				$('form').on('click', '.add_fields', function(event) {
++					console.log('clicked!')
++					 var regexp, time;
++					 time = new Date().getTime();
++					 regexp = new RegExp($(this).data('id'), 'g');
++					 $(this).before($(this).data('fields').replace(regexp, time));
++					 return event.preventDefault();
++					});
++				</script>
++
+ 				
+ 
+ 
+diff --git a/config/routes.rb b/config/routes.rb
+index aef3f8d..dc2931d 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -1,4 +1,5 @@
+ Rails.application.routes.draw do
++  resources :event_steps
+   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+   #root to: redirect('/frontend/Untitled-1.html')
+   root 'welcome#index'
+diff --git a/db/schema.rb b/db/schema.rb
+index 8f47631..e3a0113 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -10,10 +10,37 @@
+ #
+ # It's strongly recommended that you check this file into your version control system.
+ 
+-ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
++ActiveRecord::Schema[7.0].define(version: 2023_02_28_233445) do
+   # These are extensions that must be enabled in order to support this database
+   enable_extension "plpgsql"
+ 
++  create_table "event_steps", force: :cascade do |t|
++    t.string "Num"
++    t.string "StartDay"
++    t.string "StartTime"
++    t.string "EndTime"
++    t.bigint "plan_model_id", null: false
++    t.datetime "created_at", null: false
++    t.datetime "updated_at", null: false
++    t.string "Break1start"
++    t.string "Break1end"
++    t.string "Break2start"
++    t.string "Break2end"
++    t.index ["plan_model_id"], name: "index_event_steps_on_plan_model_id"
++  end
++
++  create_table "eventsteps", force: :cascade do |t|
++    t.bigint "plan_model_id", null: false
++    t.string "name"
++    t.date "start_date"
++    t.time "start_time"
++    t.date "end_date"
++    t.time "end_time"
++    t.datetime "created_at", null: false
++    t.datetime "updated_at", null: false
++    t.index ["plan_model_id"], name: "index_eventsteps_on_plan_model_id"
++  end
++
+   create_table "plan_models", force: :cascade do |t|
+     t.string "name"
+     t.text "data"
+@@ -44,4 +71,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_19_005756) do
+     t.index ["email"], name: "index_users_on_email"
+   end
+ 
++  add_foreign_key "event_steps", "plan_models"
++  add_foreign_key "eventsteps", "plan_models"
+ end
+diff --git a/public/newplan.css b/public/newplan.css
+index 10a00f7..1d20721 100644
+--- a/public/newplan.css
++++ b/public/newplan.css
+@@ -27,6 +27,7 @@ h2 {
+ 	text-align: center;
+ }
+ 
++
+ p {
+ 	font-size: 14px;
+ 	font-weight: 100;
+@@ -102,7 +103,14 @@ button.ghost {
+ 	border: none;
+ 	/* 	padding: 12px 15px; */
+ 	/* 	margin: 8px 0; */
+-	width: 10%;
++	width: 15%;
++}
++.input_time {
++	background-color: #eee;
++	border: none;
++	/* 	padding: 12px 15px; */
++	/* 	margin: 8px 0; */
++	width: 8%;
+ }
+ 
+ .container {
+@@ -269,4 +277,5 @@ footer i {
+ footer a {
+ 	color: #3c97bf;
+ 	text-decoration: none;
+-}
+\ No newline at end of file
++}
++

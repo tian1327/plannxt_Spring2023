@@ -1,0 +1,47 @@
+<%= form_with(model: event_step) do |form| %>
+  <% if event_step.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(event_step.errors.count, "error") %> prohibited this event_step from being saved:</h2>
+
+      <ul>
+        <% event_step.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :Num, style: "display: block" %>
+    <%= form.text_field :Num %>
+  </div>
+
+  <div>
+    <%= form.label :StartDay, style: "display: block" %>
+    <%= form.text_field :StartDay %>
+  </div>
+
+  <div>
+    <%= form.label :StartTime, style: "display: block" %>
+    <%= form.text_field :StartTime %>
+  </div>
+
+  <div>
+    <%= form.label :EndTime, style: "display: block" %>
+    <%= form.text_field :EndTime %>
+  </div>
+
+  <div>
+    <%= form.label :BreakTime, style: "display: block" %>
+    <%= form.text_field :BreakTime %>
+  </div>
+
+  <div>
+    <%= form.label :plan_model_id, style: "display: block" %>
+    <%= form.text_field :plan_model_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
