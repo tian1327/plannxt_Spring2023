@@ -36,19 +36,20 @@
 				<div> &nbsp</div>
 				
 				<div>
-					Dimensions of the Venue (approximate): &nbsp
-					<%= form.select :scale, ["Feet", "Meter"]%>
-					&nbsp 
-					Length:&nbsp
-					<%= form.number_field :length, :class => "input_small" %> &nbsp 
-					Width:&nbsp
-					<%= form.number_field :width, :class => "input_small" %> &nbsp 
+					<h2>Dimensions of the Venue (approximate): &nbsp 
+						<%= form.select :scale, ["Feet", "Meter"]%>
+						&nbsp 
+						Length:&nbsp
+						<%= form.number_field :length, :class => "input_small" %> &nbsp 
+						Width:&nbsp
+						<%= form.number_field :width, :class => "input_small" %> &nbsp 
+					</h2>
 				</div>
 
 				<div> &nbsp</div>
 				<div> &nbsp</div>
 				  <div>
-				    <%= form.submit "Open PLAN TEMPLATE", :class => "submit_button" %>
+				    <%= form.submit "OPEN PLAN TEMPLATE", :class => "submit_button" %>
 				  </div>
 				<% end %>
 

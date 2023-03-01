@@ -20,15 +20,24 @@ header {
 
 h1 {
 	font-weight: bold;
+	color: #333;
 	margin: 0;
 }
 
 h2 {
+	font-size: 20px;
 	text-align: center;
+	color: #333;
+}
+
+h3 {
+	font-size: 16px;
+	color: #333;
 }
 
 
 p {
+	color: #333;
 	font-size: 14px;
 	font-weight: 100;
 	line-height: 20px;
@@ -48,9 +57,9 @@ a {
 }
 
 .submit_button {
-	border-radius: 20px;
-	border: 1px solid #ff4b2b;
-	background-color: #ff4b2b;
+	border-radius: 4px;
+	border: 1px solid #333;
+	background-color: #333;
 	color: #ffffff;
 	font-size: 12px;
 	font-weight: bold;
@@ -58,6 +67,13 @@ a {
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
+}
+
+.submit_button:hover {
+	border-radius: 4px;
+	border-color: #f1c50f;
+	background-color: #f1c50f;
+	color: 333;
 }
 
 button:active {
@@ -85,21 +101,24 @@ button.ghost {
 } */
 
 .input_big {
-	background-color: #eee;
+	background-color: #fff;
+	color: #333;
 	border: none;
 	padding: 8px 10px;
 	margin: 8px 0;
 	/* 	width: 20%; */
 }
 .input_small {
-	background-color: #eee;
+	background-color: #fff;
+	color: #333;
 	border: none;
 	/* 	padding: 12px 15px; */
 	/* 	margin: 8px 0; */
 	width: 6%;
 }
 .input_date {
-	background-color: #eee;
+	background-color: #fff;
+	color: #333;
 	border: none;
 	/* 	padding: 12px 15px; */
 	/* 	margin: 8px 0; */
@@ -186,10 +205,10 @@ button.ghost {
 }
 
 .overlay {
-	background: #ff416c;
-	background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-	background: linear-gradient(to right, #ff4b2b, #ff416c);
-	background-repeat: no-repeat;
+	background: #e3e3e3;
+	/*background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);*/
+	/*background: linear-gradient(to right, #ff4b2b, #ff416c);*/
+	/*background-repeat: no-repeat;*/
 	background-size: cover;
 	background-position: 0 0;
 	color: #ffffff;
@@ -252,6 +271,11 @@ button.ghost {
 	margin: 0 5px;
 	height: 40px;
 	width: 40px;
+}
+
+label {
+	color: #333;
+	font-size: 20px
 }
 
 footer {
