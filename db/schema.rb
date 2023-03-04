@@ -10,22 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_28_233445) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_04_092117) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "event_steps", force: :cascade do |t|
     t.string "Num"
-    t.string "StartDay"
-    t.string "StartTime"
-    t.string "EndTime"
     t.bigint "plan_model_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "Break1start"
-    t.string "Break1end"
-    t.string "Break2start"
-    t.string "Break2end"
+    t.date "StartDay"
+    t.time "StartTime"
+    t.time "EndTime"
+    t.time "Break1start"
+    t.time "Break1end"
+    t.time "Break2start"
+    t.time "Break2end"
     t.index ["plan_model_id"], name: "index_event_steps_on_plan_model_id"
   end
 
