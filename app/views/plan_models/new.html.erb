@@ -16,81 +16,23 @@
 				    <%= form.label :name, "Plan Name", :class => "label" %>
 				    <%= form.text_field :name, :class => "input_big" %>
 				  </div>
-				  <h2>Event Days: Setup through Breakdown</h2>
-				
-				  
+				  <h3>Event Days: Setup through Breakdown</h3>
 				<div>
-					<h3>
-					<%= form.label :day1, "Day 1", :class => "label" %> &nbsp
-					<%= form.date_field :day1_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day1_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day1_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day1_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day1_hour6, :class => "input_small" %> 
-					</h3>
+					<p1>Start Adding steps by clicking Add Steps</p1>
 				</div>
 				<div>
-					<h3>
-					<%= form.label :day2, "Day 2", :class => "label" %> &nbsp
-					<%= form.date_field :day2_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day2_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day2_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day2_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day2_hour6, :class => "input_small" %> 
-					</h3>
+				    <p1>Step-Number|| Start Day||Start Time||End Time||Break1Start||Break1End||Break2Start||Break2End</p1>
 				</div>
+
 				<div>
-					<h3>
-					<%= form.label :day3, "Day 3", :class => "label" %> &nbsp
-					<%= form.date_field :day3_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day3_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day3_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day3_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day3_hour6, :class => "input_small" %> 
-					</h3>
-				</div>
-				<div>
-					<h3>
-					<%= form.label :day1, "Day 4", :class => "label" %> &nbsp
-					<%= form.date_field :day4_date, :class => "input_date"%> &nbsp
-					Hours 
-					<%= form.number_field :day4_hour1, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour2, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day4_hour3, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour4, :class => "input_small" %> 
-					Break
-					<%= form.number_field :day4_hour5, :class => "input_small" %> 
-					to
-					<%= form.number_field :day4_hour6, :class => "input_small" %> 
-					</h3>
-				</div>
+				    <!--
+					<%= form.fields_for :event_steps do |f| %>
+					<%= render 'event_step_fields', f: f%>
+					<% end %>
+					-->
+					<%= link_to_add_fields "Add Steps", form, :event_steps %>
+			    </div>
+
 				<div> &nbsp</div>
 				
 				<div>
@@ -110,6 +52,25 @@
 				    <%= form.submit "OPEN PLAN TEMPLATE", :class => "submit_button" %>
 				  </div>
 				<% end %>
+
+				<script>
+
+				$('form').on('click', '.remove-fields', function(event) {
+				  console.log('clicked')
+					$(this).prev('input[type=hidden]').val('1');
+					$(this).closest('fieldset').hide();
+					return event.preventDefault();
+				  });
+				
+				$('form').on('click', '.add_fields', function(event) {
+					console.log('clicked!')
+					 var regexp, time;
+					 time = new Date().getTime();
+					 regexp = new RegExp($(this).data('id'), 'g');
+					 $(this).before($(this).data('fields').replace(regexp, time));
+					 return event.preventDefault();
+					});
+				</script>
 
 				
 
