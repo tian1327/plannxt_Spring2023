@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  Num: MyString
+  StartDay: MyString
+  StartTime: MyString
+  EndTime: MyString
+  BreakTime: MyString
+  plan_model: one
+
+two:
+  Num: MyString
+  StartDay: MyString
+  StartTime: MyString
+  EndTime: MyString
+  BreakTime: MyString
+  plan_model: two

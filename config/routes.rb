@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :event_steps
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   #root to: redirect('/frontend/Untitled-1.html')
   root 'welcome#index'

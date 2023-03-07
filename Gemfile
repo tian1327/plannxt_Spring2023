@@ -20,13 +20,16 @@ gem "puma", "~> 5.0"
 gem "importmap-rails"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-# gem "turbo-rails"
+gem "turbo-rails"
+gem 'turbolinks', '~> 5'
+
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
+gem 'jquery-rails', '~> 4.3', '>= 4.3.5'
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"

@@ -35,6 +35,7 @@ h3 {
 	color: #333;
 }
 
+
 p {
 	color: #333;
 	font-size: 14px;
@@ -42,6 +43,12 @@ p {
 	line-height: 20px;
 	letter-spacing: 0.5px;
 	margin: 20px 0 30px;
+}
+
+p1 {
+	color: #333;
+	font-size: 14px;
+	text-align: center;
 }
 
 span {
@@ -121,7 +128,14 @@ button.ghost {
 	border: none;
 	/* 	padding: 12px 15px; */
 	/* 	margin: 8px 0; */
-	width: 10%;
+	width: 15%;
+}
+.input_time {
+	background-color: #eee;
+	border: none;
+	/* 	padding: 12px 15px; */
+	/* 	margin: 8px 0; */
+	width: 8%;
 }
 
 .container {
@@ -294,3 +308,4 @@ footer a {
 	color: #3c97bf;
 	text-decoration: none;
 }
+
