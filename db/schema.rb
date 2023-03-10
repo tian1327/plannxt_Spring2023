@@ -29,18 +29,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_233445) do
     t.index ["plan_model_id"], name: "index_event_steps_on_plan_model_id"
   end
 
-  create_table "eventsteps", force: :cascade do |t|
-    t.bigint "plan_model_id", null: false
-    t.string "name"
-    t.date "start_date"
-    t.time "start_time"
-    t.date "end_date"
-    t.time "end_time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["plan_model_id"], name: "index_eventsteps_on_plan_model_id"
-  end
-
   create_table "plan_models", force: :cascade do |t|
     t.string "name"
     t.text "data"
@@ -72,5 +60,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_233445) do
   end
 
   add_foreign_key "event_steps", "plan_models"
-  add_foreign_key "eventsteps", "plan_models"
 end

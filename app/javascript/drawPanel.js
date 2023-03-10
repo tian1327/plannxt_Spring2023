@@ -141,7 +141,7 @@ var graphs = [];
 
 // ];
 var tempGraphArr = [];
-dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate) {
+dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, lineWidth) {
     this.id = id;
     this.x = x;
     this.y = y;
@@ -153,6 +153,7 @@ dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate) {
     this.context = canvas.getContext("2d");
     this.canvasPos = canvas.getBoundingClientRect();
     this.graphShape = graphShape;
+    this.lineWidth = lineWidth;
 }
 
 dragGraph.prototype = {
@@ -173,6 +174,8 @@ dragGraph.prototype = {
 
     shapeDraw: function () {
         let ctx = this.context;
+        ctx.lineWidth = this.lineWidth;
+        console.log("ctx.lineWidth = ", ctx.lineWidth);
         if (this.graphShape == "rect_room"){
             console.log(this.x, this.y, this.w, this.h)
             console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
@@ -257,6 +260,29 @@ dragGraph.prototype = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
+
+canvas.addEventListener('click', function(e) {
+    var mouse = {
+        x: e.clientX - canvas.getBoundingClientRect().left,
+        y: e.clientY - canvas.getBoundingClientRect().top
+    };
+    graphs.forEach(function (shape) {
+        let id = shape.id;
+        if (shape.isMouseInGraph(mouse)) {
+            if (layer(shape.graphShape) == "top" && !top_selected) {
+                plan.items.get(id).onselected = false;
+            } else {
+                plan.items.get(id).onselected = true;
+            }
+        } else {
+            plan.items.get(id).onselected = false;
+        }
+    });
+    plan.draw();
+    plan.generateTable();
+    e.preventDefault();
+}, false);
+
 canvas.addEventListener("mousedown", function (e) {
     // avoid right click moving
     if(e.button == 1 || e.button == 2){
@@ -274,7 +300,7 @@ canvas.addEventListener("mousedown", function (e) {
             y: mouse.y - shape.y
         };
         if (shape.isMouseInGraph(mouse)) {
-            if((shape.graphShape == "rect_room" || shape.graphShape == "round_room" || shape.graphShape == "triangle_room") && !top_selected){
+            if(layer(shape.graphShape) == "top" && !top_selected){
                 return;
             }
             // console.log("cc");
@@ -322,7 +348,7 @@ canvas.addEventListener("contextmenu", function(e){
             y: mouse.y - shape.y
         };
         if (shape.isMouseInGraph(mouse)) {
-            if((shape.graphShape == "rect_room" || shape.graphShape == "round_room" || shape.graphShape == "triangle_room") && !top_selected){
+            if(layer(shape.graphShape) == "top" && !top_selected){
                 return;
             }
             //
@@ -332,6 +358,17 @@ canvas.addEventListener("contextmenu", function(e){
     });
     e.preventDefault();
 }, false);
+
+function layer(item_shape) {
+    // return which layer a item belongs to
+    if ((item_shape == "rect_room" || item_shape == "round_room" || item_shape == "triangle_room")) {
+        return "top";
+    } else if (item_shape == "couch") {
+        return "furniture";
+    }
+    return;
+}
+
 function rightClick(e, mouse, id){
     if(editable == false){
         return;
@@ -444,6 +481,7 @@ class Item{
     //setup_time;
     //breakdown_time;
     finished;
+    onselected;
     // type should be consistent with the id of the items in the repository shown in HTML
     type;
     pos_x;
@@ -452,8 +490,10 @@ class Item{
     width;
     length;
     description;
+    lineWidth;
     constructor(){
         this.finished = false;
+        this.onselected = false;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
@@ -475,8 +515,11 @@ class Item{
         if(this.layer == "staff"){
             this.strokeStyle = "red";
         }
+        
+        this.lineWidth = (this.onselected ? 3 : 1);
+
         // console.log("thishishihsihs");
-        let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, canvas, this.type, this.rotate);
+        let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, canvas, this.type, this.rotate, this.lineWidth);
         // if(this.type == "rect_room"){
         //     console.log("new graph", graph, this.type)
         // }
@@ -547,8 +590,11 @@ function drawItems(value, key, map){
     value.draw();
 }
 function generateTableItems(value, key, map){
+    console.log("generateTableItems: value.id =", value.item_id);
+    console.log("generateTableItems: value.finished =", value.finished);
+    console.log("generateTableItems: value.onselected =", value.onselected);
   var tr;
-  if(!value.finished){
+  if(!value.finished && !value.onselected){
     tr = `<tr>
     <td class="data">${value.item_id}</td>
     <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
@@ -558,6 +604,18 @@ function generateTableItems(value, key, map){
     <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
     <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
     <td class="data"> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
+    </tr>`;
+  }
+  else if (!value.finished && value.onselected) {
+    tr = `<tr>
+    <td class="data" style="background-color:#f1c50f;">${value.item_id}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
+    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
+    <td class="data" style="background-color:#f1c50f;"> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
     </tr>`;
   }
   else{
