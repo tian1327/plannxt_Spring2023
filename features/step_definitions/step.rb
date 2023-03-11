@@ -29,3 +29,31 @@ Then('I should see event icons on canvas') do
   #pending # Write code here that turns the phrase above into concrete actions
   expect(page).to have_xpath("//div[@class='sourceItems' and @id='src_copy0']")
 end
+
+Given('I am on the canvas page') do
+  visit 'edit_page/'
+  # visit "/login"
+  # visit "plan_models/:id/draw_panel"
+end
+
+Given('I am on the sign-up page') do
+  visit 'sign_up/'
+end
+
+Given('I am on the sign-in page') do
+  visit 'sign_in/'
+end
+
+When /^(?:|I )click "([^"]*)"$/ do |link|
+  click_link(link)
+  # find('tr', text: plant_name).click_link('Select')
+end
+
+
+When /^(?:|I )press "([^"]*)"$/ do |button|
+  click_button(button)
+end
+
+When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|
+  fill_in(field, :with => value)
+end
