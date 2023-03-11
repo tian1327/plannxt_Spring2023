@@ -26,6 +26,7 @@
     <meta property="og:type" content="website">
   </head>
   <body class="u-body u-xl-mode">
+
     <section class="u-align-center u-clearfix u-section-1" id="sec-a1df">
       
       <div class="u-clearfix u-sheet u-sheet-1">
@@ -59,11 +60,14 @@
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.created_at %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.updated_at %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> 
-                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit" %> /
+                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit", data: {turbolinks: false} %> /
+                  <%= link_to "Manage", "#{plan_model_path(plan_model)}/draw_panel" %> /
+                  <%= link_to "Export", "#{plan_model_path(plan_model)}/export", target: "_blank" %> /
+                  <%= link_to "Copy", "#{plan_model_path(plan_model)}/duplicate"  %> /
+                  <%= link_to "Delete", "#{plan_model_path(plan_model)}/destroy" %>
                   <% if Current.user.level.present? and Current.user.level >= 3 %>
                   <%= link_to "View Raw Data", plan_model %> /
                   <% end %>
-                  <%= button_to "Delete", plan_model_path(plan_model), method: :delete %>
                   </td>
                 </tr>
               <% end %>
@@ -73,6 +77,10 @@
         </div>
         <h4 class="u-text u-text-default u-text-1"> Total <%= @plan_model.count %> plans</h4>
         <a <%= link_to "Create a new plan", new_plan_model_path, :class=>"u-btn u-button-style u-btn-1" %></a>
+        <%= form_with url: "/import", multipart: true do |f| %>
+          <%= file_field_tag :upload %>
+          <%= f.submit "Import an existing plan", :class => "u-btn u-button-style u-btn-1" %>
+        <% end %>
       </div>
     </section>
     
