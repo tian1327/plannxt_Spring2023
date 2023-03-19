@@ -150,7 +150,9 @@ dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, l
     this.w = w;
     this.h = h;
     this.rotate = rotate;
-    this.strokeStyle = strokeStyle || "rgba(26, 188, 156, 1)";
+    this.strokeStyle = strokeStyle || "rgba(245, 245, 245, 1)";
+    // this.strokeStyle = strokeStyle || "rgba(26, 188, 156, 1)";
+    // this.strokeStyle = strokeStyle || "white";
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
     this.canvasPos = canvas.getBoundingClientRect();
@@ -273,7 +275,7 @@ dragGraph.prototype = {
             
             // draw a rect to cover the camera
             ctx.rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-            ctx.setLineDash([1, 10]);
+            ctx.setLineDash([3, 6]);
             ctx.closePath();
             ctx.stroke();
             ctx.restore();
@@ -297,7 +299,7 @@ dragGraph.prototype = {
             
             // // draw a rect to cover the img
             ctx.rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
-            ctx.setLineDash([1, 10]);
+            ctx.setLineDash([3, 6]);
             ctx.closePath();
             ctx.stroke();
             ctx.restore();
@@ -557,7 +559,7 @@ class Item{
         if(this.setup_start.timebar_value > time || this.breakdown_duration.timebar_value < time){
             return;
         }
-        if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !this.staff_selected)){
+        if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !staff_selected)){
             return;
         }
         if(this.layer == "top"){
@@ -567,13 +569,16 @@ class Item{
             this.strokeStyle = "rgba(241, 174, 28, 1)";
         }
         if(this.layer == "electrical"){
-            this.strokeStyle = "green";
+            // this.strokeStyle = "green";
+            this.strokeStyle = "rgba(245, 245, 245, 1)";
         }
         if(this.layer == "staff"){
-            this.strokeStyle = "red";
+            // this.strokeStyle = "red";
+            this.strokeStyle = "rgba(245, 245, 245, 1)";
         }
         
         this.lineWidth = (this.onselected ? 3 : 1);
+        this.strokeStyle = (this.onselected ? "red" : this.strokeStyle);
 
         // console.log("thishishihsihs");
         let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, canvas, this.type, this.rotate, this.lineWidth);
