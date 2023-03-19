@@ -19,8 +19,7 @@ defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
 defaultSize.set("couch", [20, 20]);
 defaultSize.set("camera", [25, 20]);
-defaultSize.set("wire", [50, 20]);
-defaultSize.set("speaker", [25, 20]);
+defaultSize.set("speaker", [35, 30]);
 class TimeExpression {
   constructor(expression) {
     if(expression){
@@ -179,6 +178,7 @@ dragGraph.prototype = {
         let ctx = this.context;
         ctx.lineWidth = this.lineWidth;
         console.log("ctx.lineWidth = ", ctx.lineWidth);
+
         if (this.graphShape == "rect_room"){
             console.log(this.x, this.y, this.w, this.h)
             console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
@@ -269,13 +269,17 @@ dragGraph.prototype = {
             // plot the camera.jpg on the canvas
             var img = new Image();
             img.src = "../../frontend/pic/camera.png";
-            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);            
-
+            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);          
+            
+            // draw a rect to cover the camera
+            ctx.rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+            ctx.setLineDash([1, 10]);
+            ctx.closePath();
+            ctx.stroke();
             ctx.restore();
 
-        }
-        else if (this.graphShape == "wire"){
-
+        }       
+        else if (this.graphShape == "speaker"){
             // save the ctx
             ctx.save();
             // then translate the rotating center to the icon center
@@ -286,31 +290,16 @@ dragGraph.prototype = {
             // come back to the origin center
             ctx.translate(-this.x, -this.y);            
             
-            // plot the wire with a straight line
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x + this.w, this.y);
-            ctx.stroke();
-            ctx.closePath();      
-
-            ctx.restore();
-
-        }
-        
-        else if (this.graphShape == "speaker"){
-            // save the ctx
-            ctx.save();
-            // then translate the rotating center to the icon center
-            ctx.translate(this.x, this.y);
-            // console.log("translate to a new center", this.x, this.y);
-            // then rotate the canvas
-            ctx.rotate(this.rotate * Math.PI / 180);
-            // come back to the origin center
-            ctx.translate(-this.x, -this.y);        
-
+            // plot the camera.jpg on the canvas
             var img = new Image();
             img.src = "../../frontend/pic/speaker.png";
-            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h); 
-
+            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);          
+            
+            // // draw a rect to cover the img
+            ctx.rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);
+            ctx.setLineDash([1, 10]);
+            ctx.closePath();
+            ctx.stroke();
             ctx.restore();
 
         }
@@ -568,7 +557,7 @@ class Item{
         if(this.setup_start.timebar_value > time || this.breakdown_duration.timebar_value < time){
             return;
         }
-        if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !this.staf_selected)){
+        if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !this.staff_selected)){
             return;
         }
         if(this.layer == "top"){
