@@ -18,6 +18,8 @@ defaultSize.set("rect_room", [200, 200]);
 defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
 defaultSize.set("couch", [20, 20]);
+defaultSize.set("camera", [20, 20]);
+defaultSize.set("speaker", [20, 20]);
 class TimeExpression {
   constructor(expression) {
     if(expression){
@@ -251,6 +253,14 @@ dragGraph.prototype = {
             // restore to the original status
             ctx.restore();
         }
+        else if (this.graphShape == "camera"){
+            // plot the camera.jpg on the canvas
+            var img = new Image();
+            img.src = "../../frontend/pic/camera.jpg";
+            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);            
+
+
+        }
         // if(this.id == selected_icon_id){
         //     ctx.fillStyle = 'orange';
         //     ctx.fill();
@@ -365,7 +375,12 @@ function layer(item_shape) {
         return "top";
     } else if (item_shape == "couch") {
         return "furniture";
+    } else if (item_shape == "camera"){
+        return "electrical";
+    } else if (item_shape == "speaker"){
+        return "staff";
     }
+
     return;
 }
 
