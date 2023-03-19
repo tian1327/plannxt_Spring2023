@@ -18,8 +18,8 @@ defaultSize.set("rect_room", [200, 200]);
 defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
 defaultSize.set("couch", [20, 20]);
-defaultSize.set("camera", [20, 20]);
-defaultSize.set("speaker", [20, 20]);
+defaultSize.set("camera", [25, 20]);
+defaultSize.set("speaker", [25, 20]);
 class TimeExpression {
   constructor(expression) {
     if(expression){
@@ -254,11 +254,27 @@ dragGraph.prototype = {
             ctx.restore();
         }
         else if (this.graphShape == "camera"){
+
+            // save the ctx
+            ctx.save();
+            
             // plot the camera.jpg on the canvas
             var img = new Image();
-            img.src = "../../frontend/pic/camera.jpg";
+            img.src = "../../frontend/pic/camera.png";
             ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h);            
 
+            ctx.restore();
+
+        }
+        else if (this.graphShape == "speaker"){
+            // save the ctx
+            ctx.save();
+
+            var img = new Image();
+            img.src = "../../frontend/pic/speaker.png";
+            ctx.drawImage(img, this.x - this.w / 2, this.y - this.h / 2, this.w, this.h); 
+
+            ctx.restore();
 
         }
         // if(this.id == selected_icon_id){
