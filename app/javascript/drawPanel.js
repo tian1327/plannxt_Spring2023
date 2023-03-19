@@ -19,6 +19,7 @@ defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
 defaultSize.set("couch", [20, 20]);
 defaultSize.set("camera", [25, 20]);
+defaultSize.set("wire", [50, 20]);
 defaultSize.set("speaker", [25, 20]);
 class TimeExpression {
   constructor(expression) {
@@ -257,6 +258,13 @@ dragGraph.prototype = {
 
             // save the ctx
             ctx.save();
+            // then translate the rotating center to the icon center
+            ctx.translate(this.x, this.y);
+            // console.log("translate to a new center", this.x, this.y);
+            // then rotate the canvas
+            ctx.rotate(this.rotate * Math.PI / 180);
+            // come back to the origin center
+            ctx.translate(-this.x, -this.y);            
             
             // plot the camera.jpg on the canvas
             var img = new Image();
@@ -266,9 +274,38 @@ dragGraph.prototype = {
             ctx.restore();
 
         }
+        else if (this.graphShape == "wire"){
+
+            // save the ctx
+            ctx.save();
+            // then translate the rotating center to the icon center
+            ctx.translate(this.x, this.y);
+            // console.log("translate to a new center", this.x, this.y);
+            // then rotate the canvas
+            ctx.rotate(this.rotate * Math.PI / 180);
+            // come back to the origin center
+            ctx.translate(-this.x, -this.y);            
+            
+            // plot the wire with a straight line
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x + this.w, this.y);
+            ctx.stroke();
+            ctx.closePath();      
+
+            ctx.restore();
+
+        }
+        
         else if (this.graphShape == "speaker"){
             // save the ctx
             ctx.save();
+            // then translate the rotating center to the icon center
+            ctx.translate(this.x, this.y);
+            // console.log("translate to a new center", this.x, this.y);
+            // then rotate the canvas
+            ctx.rotate(this.rotate * Math.PI / 180);
+            // come back to the origin center
+            ctx.translate(-this.x, -this.y);        
 
             var img = new Image();
             img.src = "../../frontend/pic/speaker.png";
@@ -391,7 +428,7 @@ function layer(item_shape) {
         return "top";
     } else if (item_shape == "couch") {
         return "furniture";
-    } else if (item_shape == "camera"){
+    } else if (item_shape == "camera" || item_shape == "wire"){
         return "electrical";
     } else if (item_shape == "speaker"){
         return "staff";
