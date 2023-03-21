@@ -143,7 +143,7 @@ var graphs = [];
 
 // ];
 var tempGraphArr = [];
-dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, lineWidth) {
+dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, lineWidth, mousehover) {
     this.id = id;
     this.x = x;
     this.y = y;
@@ -158,6 +158,7 @@ dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, l
     this.canvasPos = canvas.getBoundingClientRect();
     this.graphShape = graphShape;
     this.lineWidth = lineWidth;
+    this.showtext = mousehover;
 }
 
 dragGraph.prototype = {
@@ -309,6 +310,16 @@ dragGraph.prototype = {
         //     ctx.fillStyle = 'orange';
         //     ctx.fill();
         // }
+
+        // show a textbox when the mouse is hovering on the icon, the textbox shows the icon's id, name, width, length, description.
+        if (this.showtext) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+            ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2 - 20, 200, 15);
+            ctx.fillStyle = 'black';
+            ctx.font = '12px Arial';
+            ctx.fillText("id:"+this.id + ", " + this.graphShape + ", w:" + this.w + ", h:" + this.h, this.x - this.w / 2, this.y - this.h / 2 - 10);
+        }
+
     },
     erase: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -325,17 +336,65 @@ canvas.addEventListener('click', function(e) {
         if (shape.isMouseInGraph(mouse)) {
             if (layer(shape.graphShape) == "top" && !top_selected) {
                 plan.items.get(id).onselected = false;
+                plan.items.get(id).mousehovered = false;
             } else {
                 plan.items.get(id).onselected = true;
+                plan.items.get(id).mousehovered = true;
             }
         } else {
             plan.items.get(id).onselected = false;
+            plan.items.get(id).mousehovered = false;
         }
     });
     plan.draw();
     plan.generateTable();
     e.preventDefault();
 }, false);
+
+
+// canvas.addEventListener('mouseover', function(e) {
+//     var mouse = {
+//         x: e.clientX - canvas.getBoundingClientRect().left,
+//         y: e.clientY - canvas.getBoundingClientRect().top
+//     };
+//     graphs.forEach(function (shape) {
+//         let id = shape.id;
+//         if (shape.isMouseInGraph(mouse)) {
+//             if (layer(shape.graphShape) == "top" && !top_selected) {
+//                 plan.items.get(id).mousehovered = false;
+//             } else {
+//                 plan.items.get(id).mousehovered = true;
+//             }
+//         } else {
+//             plan.items.get(id).mousehovered = false;
+//         }
+//     });
+//     plan.draw();
+//     // plan.generateTable();
+//     e.preventDefault();
+// }, false);
+
+// canvas.addEventListener('mouseout', function(e) {
+//     var mouse = {
+//         x: e.clientX - canvas.getBoundingClientRect().left,
+//         y: e.clientY - canvas.getBoundingClientRect().top
+//     };
+//     graphs.forEach(function (shape) {
+//         let id = shape.id;
+//         if (shape.isMouseInGraph(mouse)) {
+//             if (layer(shape.graphShape) == "top" && !top_selected) {
+//                 plan.items.get(id).mousehovered = false;
+//             } else {
+//                 plan.items.get(id).mousehovered = true;
+//             }
+//         } else {
+//             plan.items.get(id).mousehovered = false;
+//         }
+//     });
+//     plan.draw();
+//     // plan.generateTable();
+//     e.preventDefault();
+// }, false);
 
 canvas.addEventListener("mousedown", function (e) {
     // avoid right click moving
@@ -541,6 +600,7 @@ class Item{
     //breakdown_time;
     finished;
     onselected;
+    mousehovered;
     // type should be consistent with the id of the items in the repository shown in HTML
     type;
     pos_x;
@@ -553,6 +613,7 @@ class Item{
     constructor(){
         this.finished = false;
         this.onselected = false;
+        this.mousehovered = false;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
@@ -581,7 +642,10 @@ class Item{
         this.strokeStyle = (this.onselected ? "red" : this.strokeStyle);
 
         // console.log("thishishihsihs");
-        let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, canvas, this.type, this.rotate, this.lineWidth);
+        let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, 
+                                  this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, 
+                                  canvas, this.type, this.rotate, this.lineWidth, this.mousehovered);
+
         // if(this.type == "rect_room"){
         //     console.log("new graph", graph, this.type)
         // }
