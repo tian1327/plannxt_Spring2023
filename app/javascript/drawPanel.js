@@ -594,42 +594,27 @@ function generateTableItems(value, key, map){
     console.log("generateTableItems: value.finished =", value.finished);
     console.log("generateTableItems: value.onselected =", value.onselected);
   var tr;
+  let style;
   if(!value.finished && !value.onselected){
-    tr = `<tr>
-    <td class="data">${value.item_id}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
-    <td class="data" onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
-    <td class="data"> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
-    </tr>`;
+    style = "";
   }
   else if (!value.finished && value.onselected) {
-    tr = `<tr>
-    <td class="data" style="background-color:#f1c50f;">${value.item_id}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
-    <td class="data" style="background-color:#f1c50f;" onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
-    <td class="data" style="background-color:#f1c50f;"> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
-    </tr>`;
+    style = "background-color:#f1c50f;";
   }
   else{
-    tr = `<tr>
-    <td class="data" style="background-color:grey;">${value.item_id}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
-    <td class="data" style="background-color:grey;" onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
-    <td class="data" style="background-color:grey;"> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
-    </tr>`;
+    style = "background-color:grey;";
   }
+  tr = `<tr>
+    <td class="data" style=${style}>${value.item_id}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
+    </tr>`;
+    
   $("#tableItemsBody").append(tr);
   document.getElementById(`checkbox_${value.item_id}`).checked = value.finished;
 }
