@@ -551,6 +551,7 @@ class Item{
     //setup_time;
     //breakdown_time;
     finished;
+    marked;
     onselected;
 
     // type should be consistent with the id of the items in the repository shown in HTML
@@ -564,6 +565,7 @@ class Item{
     lineWidth;
     constructor(){
         this.finished = false;
+        this.marked = false;
         this.onselected = false;
     }
     //calculateExpression(value.start_time, value.item_id)
@@ -591,6 +593,8 @@ class Item{
         
         this.lineWidth = (this.onselected ? 3 : 1);
         this.strokeStyle = (this.onselected ? "red" : this.strokeStyle);
+        this.lineWidth = (this.marked ? 3 : this.lineWidth);
+        this.strokeStyle = (this.marked ? "red" : this.strokeStyle);
 
         // console.log("thishishihsihs");
         let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, 
@@ -672,16 +676,17 @@ function generateTableItems(value, key, map){
     console.log("generateTableItems: value.onselected =", value.onselected);
   var tr;
   let style;
-  if(!value.finished && !value.onselected){
+  if(!value.finished && !value.onselected && !value.marked){
     style = "";
   }
-  else if (!value.finished && value.onselected) {
+  else if ((!value.finished && value.onselected) || (!value.finished && value.marked)) { // mark row in yellow if it is selected or marked
     style = "background-color:#f6dc6f;";
   }
   else{
     style = "background-color:grey;";
   }
   tr = `<tr>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_mark_${value.item_id}" onchange='clickToMark(event, ${value.item_id})'/></td>
     <td class="data" style=${style}>${value.item_id}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
@@ -689,12 +694,14 @@ function generateTableItems(value, key, map){
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
-    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})'/></td>
     </tr>`;
     
   $("#tableItemsBody").append(tr);
+  document.getElementById(`checkbox_mark_${value.item_id}`).checked = value.marked;
   document.getElementById(`checkbox_${value.item_id}`).checked = value.finished;
 }
+
 function clickToSelectTop(){
     // if top is currently selected
     let bt = document.getElementById("top_selector");
@@ -818,6 +825,15 @@ function clickToEditData(e, item_id, attr){
     // $("#editData").append(blank);
 
 }
+
+function clickToMark(e, item_id){
+    // console.log("uuuuu", e.currentTarget.getAttribute("class"));
+    let current_item = plan.items.get(parseInt(item_id));
+    current_item.marked = !current_item.marked;
+    plan.generateTable();
+    plan.draw();
+}
+
 function clickToChangeState(e, item_id){
     // console.log("uuuuu", e.currentTarget.getAttribute("class"));
     let current_item = plan.items.get(parseInt(item_id));
