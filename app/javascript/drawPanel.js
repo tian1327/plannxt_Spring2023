@@ -610,6 +610,9 @@ class Item{
 }
 class Plan{
     items;
+    items_array; // this is the array that stores all the items, it's used to implement undo and redo function
+    items_operation; // this is the array that stores all the operations corresponding to each item, +1 means add, -1 means delete
+    items_idx; // this is the index in the items_array, it's used to implement undo and redo function
     creator;
     current_id;
     constructor(){
@@ -617,7 +620,46 @@ class Plan{
         // However, I still need to perform the sorting algorithm, I would prefer to generate a new array and then sort it by the required attribute
         // the time complexity is O(n + nlogn) = O(nlogn)
         this.items = new Map();
+        this.items_array = [];
+        this.items_operation = [];
+        this.items_idx = -1;
     }
+
+    // undo current operation
+    undo(){
+        // do nothing if there is items_array is empty, i.e. items_idx == -1
+        if(this.items_idx == -1){
+            return;
+        }
+        let item = this.items_array[this.items_idx];
+        let operation = this.items_operation[this.items_idx];
+        if(operation == 1){
+            this.items.delete(item.item_id);
+        }else{
+            this.items.set(item.item_id, item);
+        }
+        this.items_idx--;
+        this.generateTable();
+        this.draw();
+    }
+
+    redo(){
+        // do nothing if there is nothing in the future, or the items_array is empty, i.e. items_idx == -1
+        if(this.items_idx == this.items_array.length - 1){
+            return;
+        }
+        this.items_idx++;
+        let item = this.items_array[this.items_idx];
+        let operation = this.items_operation[this.items_idx];
+        if(operation == 1){
+            this.items.set(item.item_id, item);
+        }else{
+            this.items.delete(item.item_id);
+        }
+        this.generateTable();
+        this.draw();
+    }
+
     toJSON() {
         var t = {
             "items": Object.fromEntries(this.items),
@@ -632,11 +674,17 @@ class Plan{
             // it's wrong, as the id is self-incremented, we shouldn't have
         }else{
             this.items.set(id, item);
+            this.items_array.push(item);
+            this.items_operation.push(1);
+            this.items_idx++;
         }
     }
     deleteItem(id){
         if(this.items.has(id)){
             this.items.delete(id);
+            this.items_array.push(this.items.get(id));
+            this.items_operation.push(-1);
+            this.items_idx++;
         }else{
             // no such item
         }
@@ -664,6 +712,7 @@ class Plan{
         this.items.forEach(generateTableItems);
     }
 }
+
 let plan = new Plan();
 // hashmap iteration function
 function drawItems(value, key, map){
@@ -873,11 +922,30 @@ function clickToEdit(e){
     // console.log(editable);
     return;
 }
+
+function clickToUndo(e){
+
+    plan.undo();
+
+}
+
+function clickToRedo(e){
+
+    plan.redo();
+
+}
+
 function clickToSave(e){
     console.log("tttt");
     // location.reload(false);
     // editable = false;
     plan.current_id = cnt;
+    
+    // empty the plan.items_array
+    plan.items_array = [];
+    plan.items_operations = [];
+    plan.items_idx = -1;
+
     // communicate with the server
     let str = JSON.stringify(plan);
     let sentObj = {
