@@ -143,7 +143,7 @@ var graphs = [];
 
 // ];
 var tempGraphArr = [];
-dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, lineWidth, mousehover) {
+dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, lineWidth, onselected) {
     this.id = id;
     this.x = x;
     this.y = y;
@@ -158,7 +158,7 @@ dragGraph = function (id, x, y, w, h, strokeStyle, canvas, graphShape, rotate, l
     this.canvasPos = canvas.getBoundingClientRect();
     this.graphShape = graphShape;
     this.lineWidth = lineWidth;
-    this.showtext = mousehover;
+    this.showtext = onselected;
 }
 
 dragGraph.prototype = {
@@ -311,7 +311,7 @@ dragGraph.prototype = {
         //     ctx.fill();
         // }
 
-        // show a textbox when the mouse is hovering on the icon, the textbox shows the icon's id, name, width, length, description.
+        // show a textbox when mouse clicked on the icon, the textbox shows the icon's id, name, width, length, description.
         if (this.showtext) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0)';
             ctx.fillRect(this.x - this.w / 2, this.y - this.h / 2 - 20, 200, 15);
@@ -336,65 +336,17 @@ canvas.addEventListener('click', function(e) {
         if (shape.isMouseInGraph(mouse)) {
             if (layer(shape.graphShape) == "top" && !top_selected) {
                 plan.items.get(id).onselected = false;
-                plan.items.get(id).mousehovered = false;
             } else {
                 plan.items.get(id).onselected = true;
-                plan.items.get(id).mousehovered = true;
             }
         } else {
             plan.items.get(id).onselected = false;
-            plan.items.get(id).mousehovered = false;
         }
     });
     plan.draw();
     plan.generateTable();
     e.preventDefault();
 }, false);
-
-
-// canvas.addEventListener('mouseover', function(e) {
-//     var mouse = {
-//         x: e.clientX - canvas.getBoundingClientRect().left,
-//         y: e.clientY - canvas.getBoundingClientRect().top
-//     };
-//     graphs.forEach(function (shape) {
-//         let id = shape.id;
-//         if (shape.isMouseInGraph(mouse)) {
-//             if (layer(shape.graphShape) == "top" && !top_selected) {
-//                 plan.items.get(id).mousehovered = false;
-//             } else {
-//                 plan.items.get(id).mousehovered = true;
-//             }
-//         } else {
-//             plan.items.get(id).mousehovered = false;
-//         }
-//     });
-//     plan.draw();
-//     // plan.generateTable();
-//     e.preventDefault();
-// }, false);
-
-// canvas.addEventListener('mouseout', function(e) {
-//     var mouse = {
-//         x: e.clientX - canvas.getBoundingClientRect().left,
-//         y: e.clientY - canvas.getBoundingClientRect().top
-//     };
-//     graphs.forEach(function (shape) {
-//         let id = shape.id;
-//         if (shape.isMouseInGraph(mouse)) {
-//             if (layer(shape.graphShape) == "top" && !top_selected) {
-//                 plan.items.get(id).mousehovered = false;
-//             } else {
-//                 plan.items.get(id).mousehovered = true;
-//             }
-//         } else {
-//             plan.items.get(id).mousehovered = false;
-//         }
-//     });
-//     plan.draw();
-//     // plan.generateTable();
-//     e.preventDefault();
-// }, false);
 
 canvas.addEventListener("mousedown", function (e) {
     // avoid right click moving
@@ -599,8 +551,9 @@ class Item{
     //setup_time;
     //breakdown_time;
     finished;
+    marked;
     onselected;
-    mousehovered;
+
     // type should be consistent with the id of the items in the repository shown in HTML
     type;
     pos_x;
@@ -612,8 +565,8 @@ class Item{
     lineWidth;
     constructor(){
         this.finished = false;
+        this.marked = false;
         this.onselected = false;
-        this.mousehovered = false;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
@@ -640,11 +593,13 @@ class Item{
         
         this.lineWidth = (this.onselected ? 3 : 1);
         this.strokeStyle = (this.onselected ? "red" : this.strokeStyle);
+        this.lineWidth = (this.marked ? 3 : this.lineWidth);
+        this.strokeStyle = (this.marked ? "red" : this.strokeStyle);
 
         // console.log("thishishihsihs");
         let graph = new dragGraph(this.item_id, this.pos_x * 50 / scale, this.pos_y * 50 / scale, 
                                   this.width * 50 / scale, this.length * 50 / scale, this.strokeStyle, 
-                                  canvas, this.type, this.rotate, this.lineWidth, this.mousehovered);
+                                  canvas, this.type, this.rotate, this.lineWidth, this.onselected);
 
         // if(this.type == "rect_room"){
         //     console.log("new graph", graph, this.type)
@@ -721,16 +676,17 @@ function generateTableItems(value, key, map){
     console.log("generateTableItems: value.onselected =", value.onselected);
   var tr;
   let style;
-  if(!value.finished && !value.onselected){
+  if(!value.finished && !value.onselected && !value.marked){
     style = "";
   }
-  else if (!value.finished && value.onselected) {
-    style = "background-color:#f1c50f;";
+  else if ((!value.finished && value.onselected) || (!value.finished && value.marked)) { // mark row in yellow if it is selected or marked
+    style = "background-color:#f6dc6f;";
   }
   else{
     style = "background-color:grey;";
   }
   tr = `<tr>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_mark_${value.item_id}" onchange='clickToMark(event, ${value.item_id})'/></td>
     <td class="data" style=${style}>${value.item_id}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
@@ -738,12 +694,14 @@ function generateTableItems(value, key, map){
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
     <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
-    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})' /></td>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})'/></td>
     </tr>`;
     
   $("#tableItemsBody").append(tr);
+  document.getElementById(`checkbox_mark_${value.item_id}`).checked = value.marked;
   document.getElementById(`checkbox_${value.item_id}`).checked = value.finished;
 }
+
 function clickToSelectTop(){
     // if top is currently selected
     let bt = document.getElementById("top_selector");
@@ -867,6 +825,15 @@ function clickToEditData(e, item_id, attr){
     // $("#editData").append(blank);
 
 }
+
+function clickToMark(e, item_id){
+    // console.log("uuuuu", e.currentTarget.getAttribute("class"));
+    let current_item = plan.items.get(parseInt(item_id));
+    current_item.marked = !current_item.marked;
+    plan.generateTable();
+    plan.draw();
+}
+
 function clickToChangeState(e, item_id){
     // console.log("uuuuu", e.currentTarget.getAttribute("class"));
     let current_item = plan.items.get(parseInt(item_id));
