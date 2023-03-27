@@ -478,7 +478,9 @@ function deleteItem(id, mouse_x, mouse_y){
     console.log("complete deletion");
     // document.getElementById(id).remove();
     console.log("yyyy",typeof(id))
-    plan.items.delete(id);
+    // plan.items.delete(id);
+    plan.deleteItem(id);
+
     plan.generateTable();
     plan.draw();
 }
@@ -684,10 +686,13 @@ class Plan{
     }
     deleteItem(id){
         if(this.items.has(id)){
-            this.items.delete(id);
+            
             this.items_array.push(this.items.get(id));
             this.items_operation.push(-1);
             this.items_idx++;
+
+            // has to push in the items_array and items_operation first, then delete it
+            this.items.delete(id);
         }else{
             // no such item
         }
@@ -946,7 +951,7 @@ function clickToSave(e){
     
     // empty the plan.items_array
     plan.items_array = [];
-    plan.items_operations = [];
+    plan.items_operation = [];
     plan.items_idx = -1;
 
     // communicate with the server
