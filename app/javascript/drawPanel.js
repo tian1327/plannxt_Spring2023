@@ -668,15 +668,18 @@ class Plan{
         }
         return JSON.stringify(t);
     }
-    addItem(item){
+    addItem(item, is_load = false){
         let id = item.item_id;
         if(this.items.has(id)){
             // it's wrong, as the id is self-incremented, we shouldn't have
         }else{
             this.items.set(id, item);
-            this.items_array.push(item);
-            this.items_operation.push(1);
-            this.items_idx++;
+            if(!is_load){ // if it's not loading json, then we add it to the items_array
+                this.items_array.push(item);
+                this.items_operation.push(1);
+                this.items_idx++;
+            }
+
         }
     }
     deleteItem(id){
@@ -1174,7 +1177,7 @@ function decodeJSON(str){
         cur.width = cur_items[i].width;
         cur.length = cur_items[i].length;
         console.log(cur)
-        plan.addItem(cur);
+        plan.addItem(cur, true);
     }
     console.log(plan);
     return plan;
