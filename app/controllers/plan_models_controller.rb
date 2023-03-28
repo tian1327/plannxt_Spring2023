@@ -203,9 +203,9 @@ class PlanModelsController < ApplicationController
   private
     def plan_model_data
       if Current.user
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num,:StartDay, :StartTime, :EndTime, :Break1start, :Break1end,:Break2start,:Break2end]).merge(creator: Current.user.id)
+        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num,:StartDay, :StartTime, :EndTime, :Break1start, :Break1end,:Break2start,:Break2end,:_destroy]).merge(creator: Current.user.id)
       else
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :Break1end,:Break2start,:Break2end])
+        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :Break1end,:Break2start,:Break2end,:_destroy])
       end
     end
 end
