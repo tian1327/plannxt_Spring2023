@@ -46,12 +46,12 @@
               <script>
 
               $('form').on('click', '.remove-fields', function(event) {
-                console.log('clicked')
-                $(this).prev('input[type=hidden]').val('1');
-                $(this).closest('fieldset').hide();
-                return event.preventDefault();
+                console.log('deleteclicked')
+                  $(this).prev('input[type=hidden]').val('1');
+                  $(this).closest('fieldset').hide();
+                  return event.preventDefault();
                 });
-              
+                
               $('form').on('click', '.add_fields', function(event) {
                 console.log('clicked!')
                  var regexp, time;
