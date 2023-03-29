@@ -14,13 +14,17 @@ Rails.application.routes.draw do
   
   get "plan_models/:id/draw_panel", to: "plan_models#draw_panel"
   
+  get "plan_models/:id/duplicate", to: "plan_models#duplicate"
+  get "plan_models/:id/export", to: "plan_models#export"
+  post "import", to: "plan_models#import"
+  get "plan_models/:id/destroy", to: "plan_models#destroy"
+  
   
   
   # plan_models -> return json
   get "/plan_models_json/:id", to: "plan_models#show_json"
   put "/plan_models_json/:id", to: "plan_models#update_json"
   post "/plan_models_json", to: "plan_models#create_json"
-  delete "/plan_models_json/:id", to: "plan_models#destroy_json"
   
   get "edit_page", to: "plan_models#index"
   

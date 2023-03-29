@@ -24,6 +24,8 @@
     </div>
     <nav class="navbar-default navbar-static-side">
         <h1 style="color: cornsilk;" class="col-md-3">Plannxt</h1>
+        <%= link_to "Manage Details", "/plan_models/"+@plan_model.id.to_s+"/draw_panel" %>
+        <%= link_to "Return to Plans", "/plan_models/" %>
     </nav>
     <!-- buttons -->
     <div id="page-wrapper" class="gray-bg dashbard-1">
@@ -207,6 +209,7 @@
                                 <th>Mark</th>
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Group</th>
                                 <th>Setup_start</th>
                                 <th>Setup_end</th>
                                 <th>Breakdown_start</th>
