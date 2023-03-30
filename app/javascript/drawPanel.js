@@ -14,8 +14,6 @@ let elec_selected = true;
 let staff_selected = true;
 let defaultSize = new Map();
 let selected_icon_id = -1;
-let date_list = [];
-let breakdown_time = [];
 defaultSize.set("rect_room", [200, 200]);
 defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
@@ -121,7 +119,7 @@ function addBreakdownTime(parentValue, offset, breakdown_time_index){
   var avaliable_time = breakdown_time[breakdown_time_index][0] - parentValue;
   if(avaliable_time <= offset){
     var breakdown_time_interval = breakdown_time[breakdown_time_index][1] - breakdown_time[breakdown_time_index][0];
-    return addBreakdownTime(parentValue + avaliable_time + breakdown_time_interval, offset - avaliable_time, breakdown_time_index + 1);
+    return addBreakdownTime(parentValue + avaliable_time + breakdown_time_interval, offset -avaliable_time, breakdown_time_index + 1);
   }
   else{
     return parentValue + offset;
@@ -545,14 +543,13 @@ class Item{
     name;
     //start_time;
     //end_time;
-    group_id;
 
-    // setup_start
-    // setup_duration
-    // breakdown_start
-    // breakdown_duration
+    setup_start
+    setup_duration
+    breakdown_start
+    breakdown_duration
 
-    // owner;
+    owner;
     //setup_time;
     //breakdown_time;
     finished;
@@ -572,11 +569,10 @@ class Item{
         this.finished = false;
         this.marked = false;
         this.onselected = false;
-        this.group_id = 0;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
-        if(group_manager.get_setup_start(this.group_id).timebar_value > time || group_manager.get_breakdown_duration(this.group_id).timebar_value < time){
+        if(this.setup_start.timebar_value > time || this.breakdown_duration.timebar_value < time){
             return;
         }
         if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !staff_selected)){
@@ -612,122 +608,6 @@ class Item{
         // }
         graphs.push(graph);
         graph.paint();
-    }
-}
-class group {
-    constructor(group_id, group_name) {
-        this.id = group_id;
-        this.name = group_name;
-        this.owner = "n/a";
-        
-        let current_time = new TimeExpression();
-        current_time.timebar_value = document.getElementById("timebar").value;
-        this.setup_start = new TimeExpression(current_time.toDisplayTime());
-        this.setup_duration  = new TimeExpression("1:00");
-        this.breakdown_start = new TimeExpression(current_time.toDisplayTime());
-        this.breakdown_duration = new TimeExpression("1:00");
-  
-        this.item_cnt = 1;
-    }
-}
-class GroupManager {
-    constructor() {
-        this.groups = new Array();
-        
-        this.name2id = new Object();
-        this.id2name = new Object();
-        
-        // dummy class
-        this.groups.push(new group(0));
-        this.id2name[0] = "default";
-        this.name2id["default"] = 0;
-    }
-    
-    // check whether the group already exist:
-    // if yes, return the corresponding group_id;
-    // if no, create a new group and return group_id of the new group;
-    generate_group_id(new_name, curr_id) {
-        let new_id;
-        if (new_name in this.name2id) {
-            new_id = this.name2id[new_name];
-            this.groups[new_id].item_cnt++;
-            this.#check_group_usage(curr_id);
-        } else {
-            new_id = this.#create_group(new_name);
-        }
-        return new_id;
-    }
-    
-    get_group_name(id) { 
-        console.assert(this.groups[id] != null, `group_manager: get_group_name: accessing groups with invalid group_id ${id}`);
-        return this.id2name[id];
-    }
-    
-    get_owner(id) { 
-        console.assert(this.groups[id] != null, `group_manager: get_owner: accessing groups with invalid group_id ${id}`);
-        return this.groups[id].owner; 
-    }
-    
-    set_owner(id, owner) {
-        console.assert(this.groups[id] != null, `group_manager: set_group_owner: accessing groups with invalid group_id ${id}`);
-        this.groups[id].owner = owner;
-    }
-    
-    update_times() {
-        for (let i = 0; i < this.groups.length; i++) {
-            this.groups[i].setup_start.calculateStartTime();
-            this.groups[i].setup_duration.calculateEndTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_start.calculateStartTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_duration.calculateEndTime(this.groups[i].breakdown_start);
-        }
-    }
-    
-    set_setup_start(id, expr_obj)        { this.groups[id].setup_start = expr_obj; }
-    set_setup_duration(id, expr_obj)     { this.groups[id].setup_duration = expr_obj; }
-    set_breakdown_start(id, expr_obj)    { this.groups[id].breakdown_start = expr_obj; }
-    set_breakdown_duration(id, expr_obj) { this.groups[id].breakdown_duration = expr_obj; }
-
-    get_setup_start(id)                  { return this.groups[id].setup_start; }
-    get_setup_duration(id)               { return this.groups[id].setup_duration; }
-    get_breakdown_start(id)              { return this.groups[id].breakdown_start; }
-    get_breakdown_duration(id)           { return this.groups[id].breakdown_duration; }
-    
-    
-    #create_group(name) {
-        let id = this.#find_freed_id();
-        this.groups.splice(id, 1, new group(id, name));
-        this.name2id[name] = id;
-        this.id2name[id] = name;
-        console.log(`group_manager: create_group: new group ${name} is created with id ${id}`);
-        return id;
-    }
-    
-    #check_group_usage(curr_id) {
-        if (curr_id == 0) { return; }
-        if (--this.groups[curr_id].item_cnt == 0) {
-            console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
-            this.#delete_group(curr_id);
-        }
-    }
-    
-    #delete_group(id) {
-        let name = this.id2name[id];
-        this.groups[id] = null;
-        delete this.name2id[name];
-        delete this.id2name[id];
-        console.log(`group ${name} is deleted`)
-    }
-    
-    #find_freed_id() {
-        let id = -1;
-        for (let i = 1; i <= this.groups.length; i++) {
-            if (this.groups[i] == null) {
-                id = i;
-                break;
-            }
-        }
-        console.assert(id != -1, "group_manager: cannot find freed id");
-        return id;
     }
 }
 class Plan{
@@ -830,44 +710,48 @@ class Plan{
     generateTable(){
         $("#tableItemsBody").remove();
         $("#tableItems").append("<tbody id='tableItemsBody'></tbody>");
-        group_manager.update_times();
+        console.log("this is what i want ", plan.items);
+        this.items.forEach((element) => {
+          element.setup_start.calculateStartTime();
+          element.setup_duration.calculateEndTime(element.setup_start);
+          element.breakdown_start.calculateStartTime(element.setup_start);
+          element.breakdown_duration.calculateEndTime(element.breakdown_start);
+         });
         this.items.forEach(generateTableItems);
     }
 }
 
-var plan = new Plan();
-var group_manager = new GroupManager();
+let plan = new Plan();
 // hashmap iteration function
 function drawItems(value, key, map){
     // console.log(value);
     value.draw();
 }
 function generateTableItems(value, key, map){
-  console.log("generateTableItems")
+    console.log("generateTableItems: value.id =", value.item_id);
+    console.log("generateTableItems: value.finished =", value.finished);
+    console.log("generateTableItems: value.onselected =", value.onselected);
+  var tr;
   let style;
   if(!value.finished && !value.onselected && !value.marked){
-    style = "display: none;";
+    style = "";
   }
   else if ((!value.finished && value.onselected) || (!value.finished && value.marked)) { // mark row in yellow if it is selected or marked
     style = "background-color:#f6dc6f;";
   }
   else{
-    style = "background-color:#bbb;";
+    style = "background-color:grey;";
   }
-  console.log(`generateTableItems: style = ${style}`);
-  let group_id = value.group_id;
-  let item_id = value.item_id;
-  let tr = `<tr>
-    <td class="data" style=${style}> <input type="checkbox" id="checkbox_mark_${item_id}" onchange='clickToMark(event, ${value.item_id})'/></td>
-    <td class="data" style=${style}>${item_id}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'name')">${value.name}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${group_manager.get_group_name(group_id)}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${group_manager.get_setup_start(group_id).toDisplayTime()}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_end')">${group_manager.get_breakdown_duration(group_id).toDisplayTime()}</td>
-    <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'owner')">${group_manager.get_owner(group_id)}</td>
-    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${item_id}" onchange='clickToChangeState(event, ${item_id})'/></td>
+  tr = `<tr>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_mark_${value.item_id}" onchange='clickToMark(event, ${value.item_id})'/></td>
+    <td class="data" style=${style}>${value.item_id}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'name')">${value.name}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_start')">${value.setup_start.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'setup_end')">${value.setup_duration.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_start')">${value.breakdown_start.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'breakdown_end')">${value.breakdown_duration.toDisplayTime()}</td>
+    <td class="data" style=${style} onclick="clickToEditData(event, ${value.item_id}, 'owner')">${value.owner}</td>
+    <td class="data" style=${style}> <input type="checkbox" id="checkbox_${value.item_id}" onchange='clickToChangeState(event, ${value.item_id})'/></td>
     </tr>`;
     
   $("#tableItemsBody").append(tr);
@@ -975,18 +859,17 @@ function clickToEditData(e, item_id, attr){
         document.getElementById("editData").remove();
     }
     var dispalyText;
-    let group_id = plan.items.get(item_id).group_id;
     if(attr == 'setup_start'){
-      dispalyText = group_manager.get_setup_start(group_id).expression;
+      dispalyText = plan.items.get(item_id).setup_start.expression;
     }
     else if (attr == 'setup_end') {
-      dispalyText = group_manager.get_setup_duration(group_id).expression; 
+      dispalyText = plan.items.get(item_id).setup_duration.expression;
     }
     else if (attr == 'breakdown_start') {
-      dispalyText = group_manager.get_breakdown_start(group_id).expression; 
+      dispalyText = plan.items.get(item_id).breakdown_start.expression;
     }
     else if (attr == 'breakdown_end') {
-      dispalyText = group_manager.get_breakdown_duration(group_id).expression; 
+      dispalyText = plan.items.get(item_id).breakdown_duration.expression;
     }
     else {
       dispalyText = e.currentTarget.innerText;
@@ -1017,33 +900,24 @@ function clickToChangeState(e, item_id){
 function changeData(e, id, attr){
     // console.log((e.value);
     let item = plan.items.get(id);
-    let val = e.currentTarget.value;
-    let group_id = item.group_id;
-    switch (attr) {
-        case 'name':
-            item.name = val; 
-            break;
-        case 'owner':
-            group_manager.set_owner(group_id, val);
-            break;
-        case 'group':
-            let new_group_id  = group_manager.generate_group_id(val, group_id);
-            item.group_id = new_group_id;
-            break;
-        case 'setup_start':
-            group_manager.set_setup_start(group_id, new TimeExpression(val)); 
-            break;
-        case 'setup_end':
-            group_manager.set_setup_duration(group_id, new TimeExpression(val));  
-            break;
-        case 'breakdown_start':
-            group_manager.set_breakdown_start(group_id, new TimeExpression(val)); 
-            break;
-        case 'breakdown_end': 
-            group_manager.set_breakdown_duration(group_id, new TimeExpression(val)); 
-            break;
-        default:
-            console.log(`attribute ${attr} undefined`);
+
+    if(attr == 'name'){
+        item.name = e.currentTarget.value;
+    }
+    if(attr == 'setup_start'){
+        item.setup_start.expression = e.currentTarget.value;
+    }
+    if(attr == 'setup_end'){
+        item.setup_duration.expression = e.currentTarget.value;
+    }
+    if(attr == 'breakdown_start'){
+        item.breakdown_start.expression = e.currentTarget.value;
+    }
+    if(attr == 'breakdown_end'){
+        item.breakdown_duration.expression = e.currentTarget.value;
+    }
+    if(attr == 'owner'){
+        item.owner = e.currentTarget.value;
     }
     plan.generateTable();
     plan.draw();
@@ -1188,13 +1062,13 @@ function drop_handler(ev) {
         // console.log("current time is ", time);
         // document.getElementById("showTimebar").innerText = `Plan Time: ${current_time.toDisplayTime()}`;
 
-        group_manager.set_setup_start(0, new TimeExpression(current_time.toDisplayTime()));
-        group_manager.set_setup_duration(0, new TimeExpression("1:00"));
-        group_manager.set_breakdown_start(0, new TimeExpression(current_time.toDisplayTime()));
-        group_manager.set_breakdown_duration(0, new TimeExpression("1:00"));
-        
-        current_item.group_id = 0;
 
+        current_item.setup_start = new TimeExpression(current_time.toDisplayTime());
+
+        current_item.setup_duration = new TimeExpression("1:00");
+        current_item.breakdown_start = new TimeExpression(current_time.toDisplayTime());
+        current_item.breakdown_duration = new TimeExpression("1:00");
+        // console.log("kkkkk");
         if(dragDiv.classList.contains("top")){
             current_item.layer = "top";
         }
@@ -1429,13 +1303,13 @@ function getJSON(){
 }
 // var timeRe = /^\d{2}\/\d{2}\/\d+:\d{2}$/i;
 // var relativeRe = /^t\d+\+\d+:\d{2}/i;
-// let breakdown_time = [
-//     // [12, 13],
-//     // [16, 18]
-// ];
-// let date_list =[
-//     // "04/28","04/29","04/30","05/01"
-//     ];
+let breakdown_time = [
+    // [12, 13],
+    // [16, 18]
+];
+let date_list =[
+    // "04/28","04/29","04/30","05/01"
+    ];
 
 let canvasWidth = canvas.width;
 let canvasHeight = canvas.height;
