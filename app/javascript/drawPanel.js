@@ -37,10 +37,10 @@ class TimeExpression {
       return "Invalid";
     }
     let day_index = parseInt(this.timebar_value / 24);
-    console.log("dayyyyyyy", day_index);
+    // console.log("dayyyyyyy", day_index);
     let hours = parseInt(this.timebar_value - day_index * 24);
     let minutes = Math.round((this.timebar_value - day_index * 24 - hours) * 60);
-    console.log(date_list, date_list[0]);
+    // console.log(date_list, date_list[0]);
     return date_list[day_index] + '/' +String("0" + hours).slice(-2) + ':' + String("0" + minutes).slice(-2);
   }
 
@@ -787,6 +787,7 @@ class Plan{
             "items": Object.fromEntries(this.items),
             "creator": this.creator,
             "current_id": this.current_id,
+            "groups": this.group_manager,
         }
         return JSON.stringify(t);
     }
@@ -1066,7 +1067,7 @@ function clickToRedo(e){
 }
 
 function clickToSave(e){
-    console.log("tttt");
+    console.log("Saving plan to JSON file");
     // location.reload(false);
     // editable = false;
     plan.current_id = cnt;
@@ -1265,13 +1266,12 @@ function closeMenu(){
 
 // decode from JSON
 function decodeJSON(str){
-    console.log(str);
+    console.log("Decoding JSON");
     if(str == null){
         return plan;
     }
     // update current cnt, it should be acquired from the JSON code
     let plan_obj = JSON.parse(JSON.parse(str));
-    console.log(plan_obj);
     // plan = new Plan();
     plan.creator = plan_obj.creator;
     plan.current_id = plan_obj.current_id;
@@ -1279,24 +1279,37 @@ function decodeJSON(str){
     cnt = plan.current_id;
     // plan.items = new Map(Object.entries(plan_obj.items));
 
-    let cur_items = plan_obj.items;
-
+    // decode group info
+    let group_info = plan_obj.groups;
+    plan.group_manager.id2name = group_info.id2name;
+    plan.group_manager.name2id = group_info.name2id;
+    plan.group_manager.groups = group_info.groups;
+    for (let i in plan.group_manager.groups) {
+        let g = plan.group_manager.groups[i];
+        g.setup_start = new TimeExpression(g.setup_start.expression);
+        g.setup_duration = new TimeExpression(g.setup_duration.expression);
+        g.breakdown_start = new TimeExpression(g.breakdown_start.expression);
+        g.breakdown_duration = new TimeExpression(g.breakdown_duration.expression);
+    }
+    
     // decode items
+    let cur_items = plan_obj.items;
     for(let i in cur_items){
         let cur = new Item();
         cur.item_id = cur_items[i].item_id;
+        cur.group_id = cur_items[i].group_id;
         cur.layer = cur_items[i].layer;
         cur.name = cur_items[i].name;
         //cur.start_time = new TimeExpression(cur_items[i].start_time);
         //cur.end_time = new TimeExpression(cur_items[i].end_time);
         // console.log((cur_items[i].setup_start).expression);
-        cur.setup_start = new TimeExpression(cur_items[i].setup_start.expression);
-        cur.setup_duration = new TimeExpression(cur_items[i].setup_duration.expression);
-        cur.breakdown_start = new TimeExpression(cur_items[i].breakdown_start.expression);
-        cur.breakdown_duration = new TimeExpression(cur_items[i].breakdown_duration.expression);
-        cur.owner = cur_items[i].owner;
-        cur.setup_time = cur_items[i].setup_time;
-        cur.breakdown_time = cur_items[i].breakdown_time;
+        // cur.setup_start = new TimeExpression(cur_items[i].setup_start.expression);
+        // cur.setup_duration = new TimeExpression(cur_items[i].setup_duration.expression);
+        // cur.breakdown_start = new TimeExpression(cur_items[i].breakdown_start.expression);
+        // cur.breakdown_duration = new TimeExpression(cur_items[i].breakdown_duration.expression);
+        // cur.owner = cur_items[i].owner;
+        // cur.setup_time = cur_items[i].setup_time;
+        // cur.breakdown_time = cur_items[i].breakdown_time;
         cur.type = cur_items[i].type;
         cur.pos_x = cur_items[i].pos_x;
         cur.pos_y = cur_items[i].pos_y;
