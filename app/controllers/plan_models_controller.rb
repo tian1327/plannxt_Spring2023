@@ -22,7 +22,6 @@ class PlanModelsController < ApplicationController
   def new
     @plan_model = PlanModel.new
     @plan_model.event_steps.build
-    
   end
   
   def fix_params
@@ -134,19 +133,11 @@ class PlanModelsController < ApplicationController
   
   def edit_admin
     @plan_model = PlanModel.find(params[:id])
-    #render inline: File.read('frontend/Untitled-1.html')
-    #render file: 'frontend/Untitled-1.html', layout: false
   end
   
   def edit
     @plan_model = PlanModel.find(params[:id])
     render :drawPanel
-    # if @plan_model.update(fix_params)
-    #   #render file: 'frontend/drawPanel.html', layout: false
-    #   #redirect_to edit_page_path
-    # else
-    #   #render :new, status: :unprocessable_entity
-    # end
   end
   
   def draw_panel
@@ -170,9 +161,6 @@ class PlanModelsController < ApplicationController
   end
   
   def update_json
-    # user = get_user() param debug = True, user = 1
-    # user = 1
-    # user = 4
     @plan_model = PlanModel.find(params[:id])
     logger.info params[:plan_model]
     #@plan_model.attributes = params[:plan_model]
@@ -191,13 +179,31 @@ class PlanModelsController < ApplicationController
     redirect_to edit_page_path, status: :see_other
   end
   
-  def destroy_json
+  # def destroy_json
+  #   @plan_model = PlanModel.find(params[:id])
+  #   if @plan_model.destroy
+  #     render json: {error_code:0}
+  #   else
+  #     render json: {error_code:1}
+  #   end
+  # end
+
+  def duplicate
+    @plan_model = PlanModel.find(params[:id]).dup
+    @plan_model.save
+    flash[:notice] = "Plan '#{@plan_model.name}' copied."
+    redirect_to edit_page_path
+  end
+
+  def export
     @plan_model = PlanModel.find(params[:id])
-    if @plan_model.destroy
-      render json: {error_code:0}
-    else
-      render json: {error_code:1}
-    end
+    send_data @plan_model.to_json, :filename => "plannxt-#{@plan_model.name}.json"
+  end
+
+  def import
+    @plan_model = PlanModel.new(JSON.parse(params[:upload].read))
+    @plan_model.save
+    redirect_to edit_plan_model_path(@plan_model)
   end
   
   private
