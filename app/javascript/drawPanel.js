@@ -574,7 +574,7 @@ class Item{
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
-        if(group_manager.get_setup_start(this.group_id).timebar_value > time || group_manager.get_breakdown_duration(this.group_id).timebar_value < time){
+        if(plan.group_manager.get_setup_start(this.group_id).timebar_value > time || plan.group_manager.get_breakdown_duration(this.group_id).timebar_value < time){
             return;
         }
         if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !staff_selected)){
@@ -735,6 +735,7 @@ class Plan{
     items_idx; // this is the index in the items_array, it's used to implement undo and redo function
     creator;
     current_id;
+    group_manager;
     constructor(){
         // I use hashmap to store all the items to make sure the storage used is low and deleting and searching fast.
         // However, I still need to perform the sorting algorithm, I would prefer to generate a new array and then sort it by the required attribute
@@ -743,6 +744,7 @@ class Plan{
         this.items_array = [];
         this.items_operation = [];
         this.items_idx = -1;
+        this.group_manager = new GroupManager();
     }
 
     // undo current operation
@@ -828,12 +830,11 @@ class Plan{
     generateTable(){
         $("#tableItemsBody").remove();
         $("#tableItems").append("<tbody id='tableItemsBody'></tbody>");
-        group_manager.update_times();
+        plan.group_manager.update_times();
         this.items.forEach(generateTableItems);
     }
 }
 var plan = new Plan();
-var group_manager = new GroupManager();
 // hashmap iteration function
 function drawItems(value, key, map){
     // console.log(value);
@@ -856,12 +857,12 @@ function generateTableItems(value, key, map){
   <td class="data" style=${style}> <input type="checkbox" id="checkbox_mark_${item_id}" onchange='clickToMark(event, ${value.item_id})'/></td>
   <td class="data" style=${style}>${item_id}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'name')">${value.name}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${group_manager.get_group_name(group_id)}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${group_manager.get_setup_start(group_id).toDisplayTime()}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_end')">${group_manager.get_breakdown_duration(group_id).toDisplayTime()}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'owner')">${group_manager.get_owner(group_id)}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${plan.group_manager.get_group_name(group_id)}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${plan.group_manager.get_setup_start(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${plan.group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${plan.group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_end')">${plan.group_manager.get_breakdown_duration(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'owner')">${plan.group_manager.get_owner(group_id)}</td>
   <td class="data" style=${style}> <input type="checkbox" id="checkbox_${item_id}" onchange='clickToChangeState(event, ${item_id})'/></td>
   </tr>`;
     
@@ -972,16 +973,16 @@ function clickToEditData(e, item_id, attr){
     var dispalyText;
     let group_id = plan.items.get(item_id).group_id;
     if(attr == 'setup_start'){
-        dispalyText = group_manager.get_setup_start(group_id).expression;
+        dispalyText = plan.group_manager.get_setup_start(group_id).expression;
     }
     else if (attr == 'setup_end') {
-        dispalyText = group_manager.get_setup_duration(group_id).expression; 
+        dispalyText = plan.group_manager.get_setup_duration(group_id).expression; 
     }
     else if (attr == 'breakdown_start') {
-        dispalyText = group_manager.get_breakdown_start(group_id).expression; 
+        dispalyText = plan.group_manager.get_breakdown_start(group_id).expression; 
     }
     else if (attr == 'breakdown_end') {
-        dispalyText = group_manager.get_breakdown_duration(group_id).expression; 
+        dispalyText = plan.group_manager.get_breakdown_duration(group_id).expression; 
     }
     else {
       dispalyText = e.currentTarget.innerText;
@@ -1019,23 +1020,23 @@ function changeData(e, id, attr){
             item.name = val; 
             break;
         case 'owner':
-            group_manager.set_owner(group_id, val);
+            plan.group_manager.set_owner(group_id, val);
             break;
         case 'group':
-            let new_group_id  = group_manager.generate_group_id(val, group_id);
+            let new_group_id  = plan.group_manager.generate_group_id(val, group_id);
             item.group_id = new_group_id;
             break;
         case 'setup_start':
-            group_manager.set_setup_start(group_id, new TimeExpression(val)); 
+            plan.group_manager.set_setup_start(group_id, new TimeExpression(val)); 
             break;
         case 'setup_end':
-            group_manager.set_setup_duration(group_id, new TimeExpression(val));  
+            plan.group_manager.set_setup_duration(group_id, new TimeExpression(val));  
             break;
         case 'breakdown_start':
-            group_manager.set_breakdown_start(group_id, new TimeExpression(val)); 
+            plan.group_manager.set_breakdown_start(group_id, new TimeExpression(val)); 
             break;
         case 'breakdown_end': 
-            group_manager.set_breakdown_duration(group_id, new TimeExpression(val)); 
+            plan.group_manager.set_breakdown_duration(group_id, new TimeExpression(val)); 
             break;
         default:
             console.log(`attribute ${attr} undefined`);
@@ -1147,7 +1148,7 @@ function drop_handler(ev) {
     }
     x = ev.clientX - canvas.getBoundingClientRect().left;
     y = ev.clientY - canvas.getBoundingClientRect().top;
-    console.log(ev.clientX, ev.clientY, canvas.getBoundingClientRect().left, canvas.getBoundingClientRect().top);
+    // console.log(ev.clientX, ev.clientY, canvas.getBoundingClientRect().left, canvas.getBoundingClientRect().top);
     console.log("Drop");
     ev.preventDefault();
     let id = ev.dataTransfer.getData("text");
@@ -1183,10 +1184,10 @@ function drop_handler(ev) {
         // console.log("current time is ", time);
         // document.getElementById("showTimebar").innerText = `Plan Time: ${current_time.toDisplayTime()}`;
 
-        group_manager.set_setup_start(0, new TimeExpression(current_time.toDisplayTime()));
-        group_manager.set_setup_duration(0, new TimeExpression("1:00"));
-        group_manager.set_breakdown_start(0, new TimeExpression(current_time.toDisplayTime()));
-        group_manager.set_breakdown_duration(0, new TimeExpression("1:00"));
+        plan.group_manager.set_setup_start(0, new TimeExpression(current_time.toDisplayTime()));
+        plan.group_manager.set_setup_duration(0, new TimeExpression("1:00"));
+        plan.group_manager.set_breakdown_start(0, new TimeExpression(current_time.toDisplayTime()));
+        plan.group_manager.set_breakdown_duration(0, new TimeExpression("1:00"));
         
         current_item.group_id = 0;
 
