@@ -973,16 +973,16 @@ function clickToEditData(e, item_id, attr){
     let group_id = plan.items.get(item_id).group_id;
     if(attr == 'setup_start'){
         dispalyText = group_manager.get_setup_start(group_id).expression;
-      }
-      else if (attr == 'setup_end') {
+    }
+    else if (attr == 'setup_end') {
         dispalyText = group_manager.get_setup_duration(group_id).expression; 
-      }
-      else if (attr == 'breakdown_start') {
+    }
+    else if (attr == 'breakdown_start') {
         dispalyText = group_manager.get_breakdown_start(group_id).expression; 
-      }
-      else if (attr == 'breakdown_end') {
+    }
+    else if (attr == 'breakdown_end') {
         dispalyText = group_manager.get_breakdown_duration(group_id).expression; 
-      }
+    }
     else {
       dispalyText = e.currentTarget.innerText;
     }
