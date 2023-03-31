@@ -128,12 +128,6 @@ function addBreakdownTime(parentValue, offset, breakdown_time_index){
   }
 }
 
-// let breakdown_time = [
-//     [12, 13],
-//     [16, 18]
-// ];
-// let date_list =["04/28","04/29","04/30","05/01"];
-
 // let canvasWidth = canvas.width;
 // let canvasHeight = canvas.height;
 // var canvas = document.getElementById("canvas");
@@ -541,18 +535,8 @@ class Item{
     layer;
     // count_id;
     name;
-    //start_time;
-    //end_time;
     group_id;
 
-    // setup_start
-    // setup_duration
-    // breakdown_start
-    // breakdown_duration
-
-    // owner;
-    //setup_time;
-    //breakdown_time;
     finished;
     marked;
     onselected;
@@ -1083,13 +1067,6 @@ function clickToSave(e){
         "data":str
     }
     let sentJSON = JSON.stringify(sentObj);
-
-    // server_plan_obj.data.data = str;
-    // let server_plan_json = JSON.stringify(server_plan_obj);
-    // console.log(str);
-    // console.log("-"*10);
-    // console.log(server_plan_obj);
-
     let putRequest = new XMLHttpRequest();
     putRequest.open("put", server_url);
     putRequest.setRequestHeader("Content-type", "application/json");
@@ -1236,11 +1213,6 @@ function dragend_handler(ev) {
 
 // when clicking on any other space except the menu, the menu disappear
 document.addEventListener('click', function(e){
-    // console.log(e.target.getAttribute("class"));
-    
-    // if(document.getElementById("editingForm")){
-    //     document.getElementById("editingForm").style.display = "none";
-    // }
     console.log(e.target.id);
     if(e.target.getAttribute("class") != "data" && document.getElementById("editData") && e.target.id != "blankInput"){
         selected_icon_id = -1;
@@ -1272,12 +1244,9 @@ function decodeJSON(str){
     }
     // update current cnt, it should be acquired from the JSON code
     let plan_obj = JSON.parse(JSON.parse(str));
-    // plan = new Plan();
     plan.creator = plan_obj.creator;
     plan.current_id = plan_obj.current_id;
-    // console.log(plan.current_id);
     cnt = plan.current_id;
-    // plan.items = new Map(Object.entries(plan_obj.items));
 
     // decode group info
     let group_info = plan_obj.groups;
@@ -1300,16 +1269,6 @@ function decodeJSON(str){
         cur.group_id = cur_items[i].group_id;
         cur.layer = cur_items[i].layer;
         cur.name = cur_items[i].name;
-        //cur.start_time = new TimeExpression(cur_items[i].start_time);
-        //cur.end_time = new TimeExpression(cur_items[i].end_time);
-        // console.log((cur_items[i].setup_start).expression);
-        // cur.setup_start = new TimeExpression(cur_items[i].setup_start.expression);
-        // cur.setup_duration = new TimeExpression(cur_items[i].setup_duration.expression);
-        // cur.breakdown_start = new TimeExpression(cur_items[i].breakdown_start.expression);
-        // cur.breakdown_duration = new TimeExpression(cur_items[i].breakdown_duration.expression);
-        // cur.owner = cur_items[i].owner;
-        // cur.setup_time = cur_items[i].setup_time;
-        // cur.breakdown_time = cur_items[i].breakdown_time;
         cur.type = cur_items[i].type;
         cur.pos_x = cur_items[i].pos_x;
         cur.pos_y = cur_items[i].pos_y;
@@ -1438,13 +1397,6 @@ function getJSON(){
 }
 // var timeRe = /^\d{2}\/\d{2}\/\d+:\d{2}$/i;
 // var relativeRe = /^t\d+\+\d+:\d{2}/i;
-// let breakdown_time = [
-//     // [12, 13],
-//     // [16, 18]
-// ];
-// let date_list =[
-//     // "04/28","04/29","04/30","05/01"
-//     ];
 
 let canvasWidth = canvas.width;
 let canvasHeight = canvas.height;
