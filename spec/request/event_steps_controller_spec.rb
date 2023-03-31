@@ -11,6 +11,11 @@ RSpec.describe EventStepsController, type: :controller do
       get :index
       expect(response).to render_template('index')
     end
+
+    it 'redirects to home page' do
+      get :index
+      expect(response).to be_successful
+    end
   end
 
   describe 'responds to' do
@@ -27,14 +32,6 @@ RSpec.describe EventStepsController, type: :controller do
     end
   end
 
-  describe 'index' do
-    it 'redirects to home page' do
-      get :index
-      expect(response).to be_successful
-    end
-  end
-
-  
   describe 'updates' do
     it "redirects to the event step page and flashes a notice" do
       event1 = EventStep.create( Num: 1, StartDay: "2023-03-01", StartTime: '10:20', EndTime: '10:20', Break1start: '10:20', 
@@ -47,8 +44,6 @@ RSpec.describe EventStepsController, type: :controller do
     it 'eventstep with valid parameters' do
       event1 = EventStep.create( Num: 1, StartDay: "2023-03-01", StartTime: '10:20', EndTime: '10:20', Break1start: '10:20', 
                                  Break1end:'10:20',Break2start:'10:20',Break2end: '10:20', plan_model_id:5 )
-      #get :destroy, params: { id: event1.id}
-      #expect(flash[:notice]).to match(/'Outfoxed!' deleted./)
       event1.destroy
       expect(response).to be_successful
     end
