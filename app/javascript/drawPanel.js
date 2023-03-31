@@ -734,7 +734,7 @@ function generateTableItems(value, key, map){
   var tr;
   let style;
   if(!value.finished && !value.onselected && !value.marked){
-    style = "";
+    style = "display: none;";
   }
   else if ((!value.finished && value.onselected) || (!value.finished && value.marked)) { // mark row in yellow if it is selected or marked
     style = "background-color:#f6dc6f;";
