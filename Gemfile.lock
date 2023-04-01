@@ -309,7 +309,7 @@ DEPENDENCIES
   rails_12factor
   rspec-rails
   selenium-webdriver
-  simplecov (~> 0.12.0)
+  simplecov
   sprockets-rails
   stimulus-rails
   turbo-rails
