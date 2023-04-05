@@ -1,7 +1,7 @@
 <div>
-    <%= f.date_field :StartDay, :class => "input_date" %>&nbsp
-    <%= f.time_field :StartTime, :class => "input_time" %> &nbsp
-    <%= f.time_field :EndTime, :class => "input_time" %> &nbsp
+    <%= f.date_field :StartDay,:required => 'required', :class => "input_date" %>&nbsp
+    <%= f.time_field :StartTime,:required => 'required', :class => "input_time" %> &nbsp
+    <%= f.time_field :EndTime,:required => 'required', :class => "input_time" %> &nbsp
     <%= f.time_field :Break1start, :class => "input_time" %> &nbsp
     <%= f.time_field :Break1end, :class => "input_time" %> &nbsp
     <%= f.time_field :Break2start, :class => "input_time" %> &nbsp

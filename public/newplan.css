@@ -42,7 +42,7 @@ p {
 	font-weight: 100;
 	line-height: 20px;
 	letter-spacing: 0.5px;
-	margin: 20px 0 30px;
+	margin: 20px 0 5px;
 }
 
 p1 {
@@ -54,10 +54,6 @@ p1 {
 span {
 	font-size: 12px;
 }
-table, th, td {
-	border: 1px solid black;
-	border-collapse: collapse;
-  }
 
 a {
 	color: #333;
@@ -65,6 +61,15 @@ a {
 	text-decoration: none;
 	margin: 15px 0;
 }
+table,
+th,
+td {
+	padding: 10px;
+	border: 1px solid black;
+	border-collapse: collapse;
+	align-items: center;
+	margin: auto;
+	}
 
 .submit_button {
 	border-radius: 4px;
@@ -114,8 +119,8 @@ button.ghost {
 	background-color: #fff;
 	color: #333;
 	border: none;
-	padding: 8px 10px;
-	margin: 8px 0;
+	padding: 4px 5px;
+	margin: 4px 0;
 	/* 	width: 20%; */
 }
 .input_small {
@@ -243,7 +248,7 @@ button.ghost {
 	padding: 0 40px;
 	text-align: center;
 	top: 0;
-	height: 200%;
+	height: 100%;
 	width: 50%;
 	transform: translateX(0);
 	transition: transform 0.6s ease-in-out;
