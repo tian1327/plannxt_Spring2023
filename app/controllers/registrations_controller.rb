@@ -16,7 +16,31 @@ class RegistrationsController < ApplicationController
         redirect_to sign_up_path, notice: 'Create account failed! ' + @user.errors.full_messages.join('; ') + "."
       end
     end
+
+    def toggle
+      if admin?
+        @user = User.find_by(name: params[:user])
+        @user.enabled = params[:on] || 0
+        @user.save
+      else
+        redirect_to '/'
+      end
+    end
+
+    def retrieve
+      if admin?
+        @user = User.find_by(name: params[:user])
+        render json: @user.to_json
+      else
+        redirect_to '/'
+      end
+    end
+
     private
+    def admin?
+      Current.user.name == 'admin'
+    end
+
     def user_params
       # strong parameters
       params.require(:user).permit(:name, :email, :password, :password_confirmation)

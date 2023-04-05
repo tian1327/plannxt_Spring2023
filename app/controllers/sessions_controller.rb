@@ -10,6 +10,8 @@ class SessionsController < ApplicationController
       if user.present? && user.authenticate(params[:password])
       # sets up user.id sessions
         session[:user_id] = user.id
+        user.updated_at = Time.now
+        user.save
         redirect_to edit_page_path, notice: 'Logged in successfully'
       else
         logger.info "wrong name or password"

@@ -1063,6 +1063,8 @@ function clickToSave(e){
 
     // communicate with the server
     let str = JSON.stringify(plan);
+    console.log("HERE")
+    console.log(str)
     let sentObj = {
         "data":str
     }
