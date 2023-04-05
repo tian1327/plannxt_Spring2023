@@ -1,36 +1,49 @@
   <!DOCTYPE html>
   <head>
 	<link rel="stylesheet" href="/newplan.css" media="screen">
+	<style>
+	table,
+th,
+td {
+	padding: 10px;
+	border: 1px solid black;
+	border-collapse: collapse;
+	align-items: center;
+	margin: auto;
+	}
+	</style>
     </head>
 <div class="container" id="container">
 	<div class="overlay">
 		<div class="overlay-panel overlay-right">
 			<h1>Create a New Plan</h1>
 			<p>Welcome to PLANNXT a tool to setup an event venue – all furniture and staff placements chronologically, and track the actual setup progress real-time.
-				Let’s get started.. </p>
-				
-				
-				
+				Let’s get started.. </p>				
 				<%= form_with model: @plan_model do |form| %>
 				  <div>
 				    <%= form.label :name, "Plan Name", :class => "label" %>
 				    <%= form.text_field :name, :class => "input_big" %>
 				  </div>
 				  <h3>Event Days: Setup through Breakdown</h3>
-				<div>
-					<p1>Start Adding steps by clicking Add Steps</p1>
-				</div>
-				<div>
-				    <p1>Step-Number|| Start Day||Start Time||End Time||Break1Start||Break1End||Break2Start||Break2End</p1>
-				</div>
+				  <p1>Start Adding steps by clicking Add Steps</p1>
+			 <table>
+				<tr>
+				  <th><p1>Start Day</p1>  </th>
+				  <th><p1>Start Time </p1> </th>
+				  <th><p1>End Time  </p1></th>
+				  <th><p1>Break1Start  </p1></th>
+				  <th><p1>Break1End  </p1></th>
+				  <th><p1>Break2Start </p1></th>
+				  <th><p1>Break2End  </p1></th>
+				</tr>
+			  </table>
+				    <%#<div> Start Day  ||  Start Time||  End Time||  Break1Start||  Break1End||  Break2Start||  Break2End</div>%>
 
 				<div>
-				    <!--
 					<%= form.fields_for :event_steps do |f| %>
 					<%= render 'event_step_fields', f: f%>
 					<% end %>
-					-->
-					<%= link_to_add_fields "Add Steps", form, :event_steps %>
+					<%= link_to_add_fields "Add Steps",form, :event_steps %>
 			    </div>
 
 				<div> &nbsp</div>
@@ -45,9 +58,6 @@
 						<%= form.number_field :width, :class => "input_small" %> &nbsp 
 					</h2>
 				</div>
-
-				<div> &nbsp</div>
-				<div> &nbsp</div>
 				  <div>
 				    <%= form.submit "OPEN PLAN TEMPLATE", :class => "submit_button" %>
 				  </div>
@@ -58,7 +68,7 @@
 				$('form').on('click', '.remove-fields', function(event) {
 				  console.log('clicked')
 					$(this).prev('input[type=hidden]').val('1');
-					$(this).closest('fieldset').hide();
+					$(this).closest('div').hide();
 					return event.preventDefault();
 				  });
 				
