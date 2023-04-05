@@ -31,8 +31,10 @@
 
         <div id="inputs" class="row border-bottom">
             <div id="buttons" class="navbar-header col-md-2 dashboard-header">
-                <button onclick="clickToEdit(event);">edit</button>
-                <button onclick="clickToSave(event);">save</button>
+                <%# <button onclick="clickToEdit(event);">Edit</button> %>
+                <button onclick="clickToSave(event);">Save</button>
+                <button onclick="clickToUndo(event);">Undo</button>
+                <button onclick="clickToRedo(event);">Redo</button>
             </div>
             <div class="col-md-3 dashboard-header">
                 <label id="showTimebar" for="timebar">timebar:</label>
@@ -41,7 +43,7 @@
                     readonly> -->
             </div>
             <div class="col-md-2 dashboard-header">
-                <label for="scale">scale: </label>
+                <label for="scale">Scale: </label>
                 <input type="range" name="scale" id="scale" min="10" max="100" oninput="selectTheScale();" value="50">
             </div>
             <div class="col-md-5 dashboard-header">
@@ -119,7 +121,7 @@
                                 </div>
                                 <div style="text-align: left;">triangle room</div>
                             </div>
-                            <div class="clearfix"></div>
+                            <%# <div class="clearfix"></div> %>
                             <!-- every source element in the source should be assigned with class value as "sourceItems" -->
                             <!-- it's used when telling whether we are selecting a source item or an exist item -->
                             <!-- <div class="sourceItems" draggable="true" id="rect" ondragstart="dragstart_handler(event);"
@@ -150,7 +152,7 @@
                                 <div style="text-align: left;">couch</div>
 
                             </div>
-                            <div class="clearfix"></div>
+                            <%# <div class="clearfix"></div> %>
                         </div>
                     </div>
                     <div class="ibox float-e-margins" id="electrical_layer_items">
@@ -167,7 +169,7 @@
                                 </div>
                                 <div style="text-align: left;">camera</div>
                             </div>
-                            <div class="clearfix"></div>
+                            <%# <div class="clearfix"></div> %>
                         </div>
 
                     </div>
@@ -185,7 +187,7 @@
                                 </div>
                                 <div style="text-align: left;">speaker</div>
                             </div>
-                            <div class="clearfix"></div>
+                            <%# <div class="clearfix"></div> %>
                         </div>                        
                         
                     </div>
@@ -203,14 +205,16 @@
                     <table id="tableItems" border="1" cellspacing="0" class="table table-hover no-margins">
                         <thead>
                             <tr>
-                                <th>id</th>
-                                <th>name</th>
-                                <th>setup_start</th>
-                                <th>setup_end</th>
-                                <th>breakdown_start</th>
-                                <th>breakdown_end</th>
-                                <th>owner</th>
-                                <th>finished</th>
+                                <th>Mark</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Group</th>
+                                <th>Setup_start</th>
+                                <th>Setup_end</th>
+                                <th>Breakdown_start</th>
+                                <th>Breakdown_end</th>
+                                <th>Owner</th>
+                                <th>Finished</th>
                             </tr>
                         </thead>
                         <tbody id="tableItemsBody">

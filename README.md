@@ -89,6 +89,17 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 
 <br/>
 
+### To run cucumber test
+```console
+RAILS_ENV=test rails server
+```
+
+```console
+RAILS_ENV=test rake cucumber
+```
+
+
+<br/>
 * Some useful Heroku commands
   * check production logs to analyze bugs `heroku logs`
 
