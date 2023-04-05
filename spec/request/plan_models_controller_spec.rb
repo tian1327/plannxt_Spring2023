@@ -10,4 +10,13 @@ RSpec.describe PlanModelsController, type: :controller do
                                              
     end
   end
+  describe 'destroy' do
+    it 'destroy eventstep with valid parameters' do
+      model1 = PlanModel.create( name: 'demo')
+      #get :destroy, params: { id: event1.id}
+      #expect(flash[:notice]).to match(/'Outfoxed!' deleted./)
+      model1.destroy
+      expect(response).to be_successful
+    end
+  end
 end
