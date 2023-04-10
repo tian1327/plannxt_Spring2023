@@ -1119,16 +1119,18 @@ function clickToCheckDependency(e){
     // flash a message to the user saying "checking dependency"
     const notification = document.getElementById("notification");
     notification.innerHTML = "Checking dependency...";
-
     
     message = plan.check_dependency();
+    // message = '';
 
-    // notification.innerHTML = "Process completed!";
-    setTimeout(() => {
-        notification.innerHTML = "Process completed!";
-      }, 3000); // Wait for 3 seconds (3000 milliseconds)
-    
+    if (message == "") {
+        message = "Great job! No dependency violation detected!";
+    }
+    else {
+        message = message + '<br>X Please fix the dependency violation(s) by updating the time and try again!';
+    }
 
+    notification.innerHTML = message;
 }
 
 function clickToSave(e){
