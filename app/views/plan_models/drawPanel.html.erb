@@ -48,6 +48,8 @@
             </div>
             
             <div class="col-md-2 dashboard-header">
+                <%# add a checkbox, onclick will execute some javascript function %>
+                <label> <input type="checkbox" id="checktimebar">	</label>
                 <label id="showTimebar" for="timebar">timebar:</label>
                 <input type="range" name="timebar" id="timebar" min="0" max="24" oninput="selectTheTime();" value="0" step="0.01">
                 <!-- <input type="number" id="showTimeBar" style="width: 40px; background-color:rgb(207, 197, 197);"

@@ -1,3 +1,5 @@
+let timebar_checked = false;
+let timebar_checkbox = document.getElementById("checktimebar");
 let cnt = 0;
 let server_plan_obj;
 let server_url;
@@ -22,6 +24,18 @@ defaultSize.set("triangle_room", [200, 200]);
 defaultSize.set("couch", [20, 20]);
 defaultSize.set("camera", [25, 20]);
 defaultSize.set("speaker", [35, 30]);
+
+timebar_checkbox.addEventListener("click", function(){
+    if (this.checked) {
+        // Execute some JavaScript function here
+        console.log("Checkbox is checked!");
+        timebar_checked = true;
+    } else {        
+        console.log("Checkbox is not checked.");
+        timebar_checked = false;
+    }
+});   
+
 class TimeExpression {
   constructor(expression) {
     if(expression){
@@ -1184,6 +1198,11 @@ function clickToSave(e){
     return;
 }
 function selectTheTime(){
+
+    if (timebar_checked == false){
+        return;
+    }
+
     // console.log("test clicking the timebar");
     let current_time = new TimeExpression();
     current_time.timebar_value = document.getElementById("timebar").value;
