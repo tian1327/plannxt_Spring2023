@@ -18,7 +18,11 @@ Rails.application.routes.draw do
   get "plan_models/:id/export", to: "plan_models#export"
   post "import", to: "plan_models#import"
   get "plan_models/:id/destroy", to: "plan_models#destroy"
-  
+  get "plan_models/:id/sharing", to: "plan_models#sharing"
+  post "share/:id", to: "plan_models#share"
+
+  post "crm/toggle", to: 'registrations#toggle'
+  get "crm/retrieve/:user", to: 'registrations#retrieve'
   
   
   # plan_models -> return json

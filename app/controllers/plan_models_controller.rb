@@ -4,7 +4,7 @@ class PlanModelsController < ApplicationController
 
   def index
     logger.info Current.user.id
-    @plan_model = PlanModel.where(creator:Current.user.id).order("created_at DESC")
+    @plan_model = PlanModel.where(":user = ANY(viewers) OR :user = creator", user: Current.user.id).order("created_at DESC")
     @user = User.all
     #render json: @plan_model.to_json
   end
@@ -64,7 +64,6 @@ class PlanModelsController < ApplicationController
       extra1_dict["day"+ 1.to_s+"_hour6"] = unit_event[:Break2end]
       i+=1
     end
-    '''
     if params[:plan_model].key?("day1_date")
       extra1_dict = {"day1_date" => params[:plan_model].delete(:day1_date),
                                       "day1_hour1" => params[:plan_model].delete(:day1_hour1),
@@ -100,7 +99,6 @@ class PlanModelsController < ApplicationController
                                       
       }
     end
-    '''
     new_paras[:extra1] = extra1_dict.to_json
     logger.info "After fix:"
     logger.info new_paras
@@ -111,11 +109,11 @@ class PlanModelsController < ApplicationController
   def create
     #@plan_model = PlanModel.new(plan_model_data)
     @plan_model = PlanModel.new(fix_params)
+    @plan_model.creator = Current.user.id
 
     if @plan_model.save
-      redirect_to edit_plan_model_path(@plan_model)
-      #redirect_to edit_page_path
-      #redirect_to draw_panel
+      flash[:notice] = "#{@plan_model.name} created successfully."
+      redirect_to edit_page_path
     else
       render :new, status: :unprocessable_entity
     end
@@ -162,7 +160,7 @@ class PlanModelsController < ApplicationController
   
   def update_json
     @plan_model = PlanModel.find(params[:id])
-    logger.info params[:plan_model]
+    # logger.info params[:plan_model]
     #@plan_model.attributes = params[:plan_model]
     if @plan_model.update(plan_model_data)
       render json: {error_code:0,  data:@plan_model}
@@ -173,45 +171,100 @@ class PlanModelsController < ApplicationController
   
   def destroy
     @plan_model = PlanModel.find(params[:id])
-    @plan_model.destroy
-    flash[:notice] = "#{@plan_model.name} was successfully deleted."
-
-    redirect_to edit_page_path, status: :see_other
+    if creator?
+      @plan_model.destroy
+      flash[:notice] = "'#{@plan_model.name}' deleted successfully."
+    elsif access?
+      @plan_model.viewers.delete Current.user.id
+      @plan_model.editors.delete Current.user.id
+      @plan_model.save
+      flash[:notice] = "Removed from '#{@plan_model.name}'."
+    else
+      flash[:notice] = "Not found."
+    end
+    redirect_to edit_page_path 
   end
   
-  # def destroy_json
-  #   @plan_model = PlanModel.find(params[:id])
-  #   if @plan_model.destroy
-  #     render json: {error_code:0}
-  #   else
-  #     render json: {error_code:1}
-  #   end
-  # end
+  def destroy_json
+    @plan_model = PlanModel.find(params[:id])
+    if @plan_model.destroy
+      render json: {error_code:0}
+    else
+      render json: {error_code:1}
+    end
+  end
 
   def duplicate
     @plan_model = PlanModel.find(params[:id]).dup
-    @plan_model.save
-    flash[:notice] = "Plan '#{@plan_model.name}' copied."
+    if access?
+      flush_users
+      @plan_model.save
+      flash[:notice] = "Plan '#{@plan_model.name}' copied successfully."
+    else
+      flash[:notice] = "Not found."
+    end
     redirect_to edit_page_path
   end
 
   def export
     @plan_model = PlanModel.find(params[:id])
-    send_data @plan_model.to_json, :filename => "plannxt-#{@plan_model.name}.json"
+    if access?
+      send_data @plan_model.to_json, :filename => "#{@plan_model.name}.plannxt"
+    else
+      flash[:notice] = "Not found."
+      redirect_to edit_page_path
+    end
   end
 
   def import
-    @plan_model = PlanModel.new(JSON.parse(params[:upload].read))
+    @plan_model = PlanModel.new(JSON.parse(params[:upload].read)).dup
+    flush_users
     @plan_model.save
-    redirect_to edit_plan_model_path(@plan_model)
+    flash[:notice] = "Plan '#{@plan_model.name}' imported successfully."
+    redirect_to edit_page_path
+  end
+
+  def sharing
+    @plan_model = PlanModel.find(params[:id])
+    render :sharing
+  end
+  
+  def share
+    @plan_model = PlanModel.find(params[:id])
+    user = User.find_by(name: params[:user])
+    if !user.nil?
+      @plan_model.viewers |= [user.id]
+      if params[:edit]
+        @plan_model.editors |= [user.id]
+      end
+      @plan_model.save
+      flash[:notice] = "'#{@plan_model.name}' shared with #{user.name}."
+    else
+      flash[:notice] = "User not found."
+    end
+    redirect_to edit_page_path
   end
   
   private
     def plan_model_data
       if Current.user
-        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num,:StartDay, :StartTime, :EndTime, :Break1start, :Break1end,:Break2start,:Break2end,:_destroy]).merge(creator: Current.user.id)
+        params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num,:StartDay, :StartTime, :EndTime, :Break1start, :Break1end,:Break2start,:Break2end, :_destroy])
       else
         params.require(:plan_model).permit(:name, :data, :editPermission, :viewPermission, :extra1, :extra2, :extra3, event_steps_attributes:[:id, :Num, :StartDay, :StartTime, :EndTime, :Break1end,:Break2start,:Break2end,:_destroy])
       end
+    end
+    
+    def creator?
+      Current.user.id == @plan_model.creator
+    end
+
+    def access?
+      Current.user.id.in? @plan_model.viewers << @plan_model.creator
+    end
+
+    def flush_users
+      @plan_model.creator = Current.user.id
+      @plan_model.viewers.clear
+      @plan_model.editors.clear
     end
 end

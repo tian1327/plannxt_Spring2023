@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_04_092117) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_05_014828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_04_092117) do
     t.string "extra3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "viewers", default: [], array: true
+    t.integer "editors", default: [], array: true
+    t.boolean "public", default: false
     t.index ["creator"], name: "index_plan_models_on_creator"
   end
 
@@ -56,6 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_04_092117) do
     t.string "extra3"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "enabled", default: true
     t.index ["email"], name: "index_users_on_email"
   end
 
