@@ -766,6 +766,15 @@ class Plan{
         this.draw();
     }
 
+    check_dependency(){
+        // for each item, check if it's dependent on other items by checking
+        // if it's dependent on other items, then we need to check if the other items are in the plan
+        // if the other items are not in the plan, then we need to add them to the plan
+
+
+    }
+
+
     toJSON() {
         var t = {
             "items": Object.fromEntries(this.items),
@@ -1047,6 +1056,12 @@ function clickToUndo(e){
 function clickToRedo(e){
 
     plan.redo();
+
+}
+
+function clickToCheckDependency(e){
+
+    plan.check_dependency();
 
 }
 
