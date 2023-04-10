@@ -536,6 +536,7 @@ class Item{
     // count_id;
     name;
     group_id;
+    depend_group_id;
 
     finished;
     marked;
@@ -555,6 +556,7 @@ class Item{
         this.marked = false;
         this.onselected = false;
         this.group_id = 0;
+        this.depend_group_id =0;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
@@ -642,6 +644,19 @@ class GroupManager {
         }
         return new_id;
     }
+
+    generate_depend_group_id(new_name, curr_id) { // double check on this
+        let new_id;
+        if (new_name in this.name2id) {
+            new_id = this.name2id[new_name];
+            // this.groups[new_id].item_cnt++;
+            this.#check_group_usage(curr_id);
+        } else {
+            new_id = this.#create_group(new_name);
+        }
+        return new_id;
+    }
+
     
     get_group_name(id) { 
         console.assert(this.groups[id] != null, `group_manager: get_group_name: accessing groups with invalid group_id ${id}`);
@@ -775,6 +790,11 @@ class Plan{
     }
 
     check_dependency(){
+
+        // loop through each item, continue if the current item's dependency is none
+        // otherwise, check if the dependency is satisfied
+
+
         this.items.forEach(checkDependency);
     }
 
@@ -1025,6 +1045,10 @@ function changeData(e, id, attr){
             let new_group_id  = plan.group_manager.generate_group_id(val, group_id);
             item.group_id = new_group_id;
             break;
+        case 'depend_group':
+            let new_depend_group_id  = plan.group_manager.generate_depend_group_id(val, group_id);
+            item.depend_group_id = new_depend_group_id;
+            break;            
         case 'setup_start':
             plan.group_manager.set_setup_start(group_id, new TimeExpression(val)); 
             break;
@@ -1066,7 +1090,18 @@ function clickToRedo(e){
 
 function clickToCheckDependency(e){
 
-    plan.check_dependency();
+    // flash a message to the user saying "checking dependency"
+    const notification = document.getElementById("notification");
+    notification.innerHTML = "Checking dependency...";
+
+    
+    // plan.check_dependency();
+
+    // notification.innerHTML = "Process completed!";
+    setTimeout(() => {
+        notification.innerHTML = "Process completed!";
+      }, 3000); // Wait for 3 seconds (3000 milliseconds)
+    
 
 }
 

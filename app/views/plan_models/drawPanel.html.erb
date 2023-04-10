@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="font-awesome.css">
+    <link rel="stylesheet" href="./notify.min.css" />
+    <script src="./notify.min.js"></script>
 </head>
 
 <body class="pace-done" data-new-gr-c-s-check-loaded="14.1056.0" data-gr-ext-installed>
@@ -39,7 +41,8 @@
                 <button onclick="clickToRedo(event);">Redo</button>
                 <%# route to the dependency page under current plan %>
                 <%# <%= link_to "Set Dependency", "/dependency" %>  
-                <button onclick="clickToCheckDependency(event);">Check Dependency</button>
+                <%# <button id='notifyBtn' onclick="clickToCheckDependency(event);">Check Dependency</button>
+                <div id="notification"></div> %>
 
                 <%# <%= link_to "Return to Plans", "/plan_models/" %> 
             </div>
@@ -232,6 +235,14 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div id="buttons" class="navbar-header col-md-3 dashboard-header">
+                    <%# route to the dependency page under current plan %>
+                    <%# <%= link_to "Set Dependency", "/dependency" %>  
+                    <button id='notifyBtn' onclick="clickToCheckDependency(event);">Check Dependency</button>
+                    <div id="notification"></div>
+                </div>
+
             </div>
         </div>        
     </div>
