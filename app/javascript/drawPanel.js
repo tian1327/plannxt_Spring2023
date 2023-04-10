@@ -617,12 +617,15 @@ class GroupManager {
         this.groups = new Array();
         
         this.name2id = new Object();
-        this.id2name = new Object();
+        this.id2name = new Object(); // group name
+        this.id2name_depend = new Object(); // dependency group name
         
         // dummy class
         this.groups.push(new group(0));
         this.id2name[0] = "default";
         this.name2id["default"] = 0;
+        this.id2name_depend[0] = "none";
+
     }
     
     // check whether the group already exist:
@@ -643,6 +646,11 @@ class GroupManager {
     get_group_name(id) { 
         console.assert(this.groups[id] != null, `group_manager: get_group_name: accessing groups with invalid group_id ${id}`);
         return this.id2name[id];
+    }
+
+    get_depend_group_name(id) { 
+        console.assert(this.groups[id] != null, `group_manager: get_depend_group_name: accessing groups with invalid group_id ${id}`);
+        return this.id2name_depend[id];
     }
     
     get_owner(id) { 
@@ -767,11 +775,7 @@ class Plan{
     }
 
     check_dependency(){
-        // for each item, check if it's dependent on other items by checking
-        // if it's dependent on other items, then we need to check if the other items are in the plan
-        // if the other items are not in the plan, then we need to add them to the plan
-
-
+        this.items.forEach(checkDependency);
     }
 
 
@@ -852,6 +856,7 @@ function generateTableItems(value, key, map){
   <td class="data" style=${style}>${item_id}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'name')">${value.name}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${plan.group_manager.get_group_name(group_id)}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'depend_group')">${plan.group_manager.get_depend_group_name(group_id)}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${plan.group_manager.get_setup_start(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${plan.group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${plan.group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
