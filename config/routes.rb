@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "plan_models/:id/edit_admin", to: "plan_models#edit_admin", as: 'edit_admin'
   
   get "plan_models/:id/draw_panel", to: "plan_models#draw_panel"
+  # get "plan_models/:id/dependency", to: "plan_models#dependency"  
   
   get "plan_models/:id/duplicate", to: "plan_models#duplicate"
   get "plan_models/:id/export", to: "plan_models#export"
