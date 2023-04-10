@@ -711,7 +711,6 @@ class GroupManager {
                 }
             }
         }
-        console.log(msg);
         return msg;
     }
     
