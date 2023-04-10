@@ -138,6 +138,11 @@ class PlanModelsController < ApplicationController
     render :drawPanel
   end
   
+  def dependency
+    @plan_model = PlanModel.find(params[:id])
+    render :dependency
+  end
+
   def draw_panel
     @plan_model = PlanModel.find(params[:id])
     @extra1_dict = JSON.parse(@plan_model.extra1)
