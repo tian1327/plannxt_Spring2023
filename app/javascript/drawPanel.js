@@ -794,8 +794,34 @@ class Plan{
         // loop through each item, continue if the current item's dependency is none
         // otherwise, check if the dependency is satisfied
 
+        // define a variable named message to store the message
+        let message = "";
 
+        // loop through each item in the items
+        function checkDependency(item, key, map){
+            // if the item's dependency is none, then we don't need to check
+            if(item.dependency == "none"){
+                return;
+            }
+            // if the item's dependency is not none, then we need to check if the dependency is satisfied
+            // we need to check if the dependency is in the items
+            if(!map.has(item.dependency)){
+                message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} does not exist\n`;
+                return;
+            }
+
+            // if the dependency is in the items, then we need to check if the dependency is satisfied
+            // we need to check if the dependency's end time is earlier than the current item's start time
+            let dependency_item = map.get(item.dependency);
+            if(dependency_item.end_time > item.start_time){
+                message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} ends at ${dependency_item.end_time} which is later than item ${item.item_id}'s start time ${item.start_time}\n`;
+                return;
+            }
+        }
+        
         this.items.forEach(checkDependency);
+
+        return message;
     }
 
 
@@ -1095,7 +1121,7 @@ function clickToCheckDependency(e){
     notification.innerHTML = "Checking dependency...";
 
     
-    // plan.check_dependency();
+    message = plan.check_dependency();
 
     // notification.innerHTML = "Process completed!";
     setTimeout(() => {
