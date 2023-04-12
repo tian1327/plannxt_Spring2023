@@ -636,7 +636,7 @@ class GroupManager {
         } else {
             new_id = this.#create_group(new_name);
         }
-        this.check_group_usage(curr_id);
+        this.#check_group_usage(curr_id);
         return new_id;
     }
     
@@ -724,21 +724,11 @@ class GroupManager {
         return id;
     }
     
-    check_group_usage(curr_id) {
+    #check_group_usage(curr_id) {
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
             console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
             this.#delete_group(curr_id);
-            this.#check_group_depend(curr_id);
-        }
-    }
-    
-    // set depend_id to default if its depend group is deleted
-    #check_group_depend(id) {
-        for (let i = 1; i <= this.groups.length; i++) {
-            if (this.groups[i] != null && this.groups[i].depend_id == id) {
-                this.groups[i].depend_id = 0;
-            }
         }
     }
     
@@ -878,14 +868,12 @@ class Plan{
     }
     deleteItem(id){
         if(this.items.has(id)){
-            // check group usage. delete group if needed
-            let item = this.items_array[id];
-            this.group_manager.check_group_usage(item.group_id);
             
-            // has to push in the items_array and items_operation first, then delete it
             this.items_array.push(this.items.get(id));
             this.items_operation.push(-1);
             this.items_idx++;
+
+            // has to push in the items_array and items_operation first, then delete it
             this.items.delete(id);
         }else{
             // no such item
