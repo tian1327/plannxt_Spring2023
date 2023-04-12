@@ -729,6 +729,16 @@ class GroupManager {
         if (--this.groups[curr_id].item_cnt == 0) {
             console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
             this.#delete_group(curr_id);
+            this.#check_group_depend(curr_id);
+        }
+    }
+    
+    // set depend_id to default if its depend group is deleted
+    #check_group_depend(id) {
+        for (let i = 1; i <= this.groups.length; i++) {
+            if (this.groups[i] != null && this.groups[i].depend_id == id) {
+                this.groups[i].depend_id = 0;
+            }
         }
     }
     
