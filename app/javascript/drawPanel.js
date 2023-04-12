@@ -176,11 +176,10 @@ dragGraph.prototype = {
     shapeDraw: function () {
         let ctx = this.context;
         ctx.lineWidth = this.lineWidth;
-        console.log("ctx.lineWidth = ", ctx.lineWidth);
 
         if (this.graphShape == "rect_room"){
-            console.log(this.x, this.y, this.w, this.h)
-            console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
+            // console.log(this.x, this.y, this.w, this.h)
+            // console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
             // first save the ctx
             ctx.save();
             // then translate to the new center
@@ -536,7 +535,6 @@ class Item{
     // count_id;
     name;
     group_id;
-    depend_group_id;
 
     finished;
     marked;
@@ -556,7 +554,6 @@ class Item{
         this.marked = false;
         this.onselected = false;
         this.group_id = 0;
-        this.depend_group_id =0;
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
@@ -602,7 +599,8 @@ class group {
     constructor(group_id, group_name) {
         this.id = group_id;
         this.name = group_name;
-        this.owner = "n/a";
+        this.owner = "None";
+        this.depend_id = 0;
         
         let current_time = new TimeExpression();
         current_time.timebar_value = document.getElementById("timebar").value;
@@ -619,53 +617,32 @@ class GroupManager {
         this.groups = new Array();
         
         this.name2id = new Object();
-        this.id2name = new Object(); // group name
-        this.id2name_depend = new Object(); // dependency group name
-        
-        // dummy class
-        this.groups.push(new group(0));
-        this.id2name[0] = "default";
-        this.name2id["default"] = 0;
-        this.id2name_depend[0] = "none";
+        this.id2name = new Object(); 
 
+        // dummy class for every newly created item
+        this.groups.push(new group(0));
+        this.id2name[0] = "Default";
+        this.name2id["Default"] = 0;
     }
     
     // check whether the group already exist:
     // if yes, return the corresponding group_id;
     // if no, create a new group and return group_id of the new group;
-    generate_group_id(new_name, curr_id) {
+    generate_group_id(curr_id, new_name) {
         let new_id;
         if (new_name in this.name2id) {
             new_id = this.name2id[new_name];
             this.groups[new_id].item_cnt++;
-            this.#check_group_usage(curr_id);
         } else {
             new_id = this.#create_group(new_name);
         }
+        this.check_group_usage(curr_id);
         return new_id;
     }
-
-    generate_depend_group_id(new_name, curr_id) { // double check on this
-        let new_id;
-        if (new_name in this.name2id) {
-            new_id = this.name2id[new_name];
-            // this.groups[new_id].item_cnt++;
-            this.#check_group_usage(curr_id);
-        } else {
-            new_id = this.#create_group(new_name);
-        }
-        return new_id;
-    }
-
     
     get_group_name(id) { 
         console.assert(this.groups[id] != null, `group_manager: get_group_name: accessing groups with invalid group_id ${id}`);
         return this.id2name[id];
-    }
-
-    get_depend_group_name(id) { 
-        console.assert(this.groups[id] != null, `group_manager: get_depend_group_name: accessing groups with invalid group_id ${id}`);
-        return this.id2name_depend[id];
     }
     
     get_owner(id) { 
@@ -680,11 +657,14 @@ class GroupManager {
     
     update_times() {
         for (let i = 0; i < this.groups.length; i++) {
-            this.groups[i].setup_start.calculateStartTime();
-            this.groups[i].setup_duration.calculateEndTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_start.calculateStartTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_duration.calculateEndTime(this.groups[i].breakdown_start);
+            if (this.groups[i] != null) {
+                this.groups[i].setup_start.calculateStartTime();
+                this.groups[i].setup_duration.calculateEndTime(this.groups[i].setup_start);
+                this.groups[i].breakdown_start.calculateStartTime(this.groups[i].setup_start);
+                this.groups[i].breakdown_duration.calculateEndTime(this.groups[i].breakdown_start);
+            }
         }
+        this.check_group_depend_conflict();
     }
     
     set_setup_start(id, expr_obj)        { this.groups[id].setup_start = expr_obj; }
@@ -731,6 +711,7 @@ class GroupManager {
                 }
             }
         }
+        console.log(msg);
         return msg;
     }
     
@@ -743,7 +724,7 @@ class GroupManager {
         return id;
     }
     
-    #check_group_usage(curr_id) {
+    check_group_usage(curr_id) {
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
             console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
@@ -938,7 +919,7 @@ function generateTableItems(value, key, map){
   <td class="data" style=${style}>${item_id}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'name')">${value.name}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${plan.group_manager.get_group_name(group_id)}</td>
-  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'depend_group')">${plan.group_manager.get_depend_group_name(group_id)}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'depend_group')">${plan.group_manager.get_depend_group(group_id)}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${plan.group_manager.get_setup_start(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${plan.group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${plan.group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
@@ -1044,7 +1025,7 @@ function clickToEditData(e, item_id, attr){
     oy = table.getBoundingClientRect().top;
     x = e.currentTarget.getBoundingClientRect().left;
     y = e.currentTarget.getBoundingClientRect().top;
-    console.log(item_id, x, y, ox, oy, e.currentTarget);
+    // console.log(item_id, x, y, ox, oy, e.currentTarget);
     // let newDiv = document.createElement("div");
     // newDiv.id = "editData";
     // newDiv.style.cssText = `position: absolute; left: ${x}px; top: ${y}px;`;
@@ -1104,12 +1085,11 @@ function changeData(e, id, attr){
             plan.group_manager.set_owner(group_id, val);
             break;
         case 'group':
-            let new_group_id  = plan.group_manager.generate_group_id(val, group_id);
+            let new_group_id  = plan.group_manager.generate_group_id(group_id, val);
             item.group_id = new_group_id;
             break;
         case 'depend_group':
-            let new_depend_group_id  = plan.group_manager.generate_depend_group_id(val, group_id);
-            item.depend_group_id = new_depend_group_id;
+            plan.group_manager.set_depend_group(group_id, val);
             break;            
         case 'setup_start':
             plan.group_manager.set_setup_start(group_id, new TimeExpression(val)); 
@@ -1236,7 +1216,7 @@ function dragstart_handler(ev) {
 }
 function dragover_handler(ev) {
     ev.preventDefault();
-    console.log("dragOver");
+    // console.log("dragOver");
 }
 
 function drop_handler(ev) {
@@ -1246,7 +1226,7 @@ function drop_handler(ev) {
     x = ev.clientX - canvas.getBoundingClientRect().left;
     y = ev.clientY - canvas.getBoundingClientRect().top;
     // console.log(ev.clientX, ev.clientY, canvas.getBoundingClientRect().left, canvas.getBoundingClientRect().top);
-    console.log("Drop");
+    // console.log("Drop");
     ev.preventDefault();
     let id = ev.dataTransfer.getData("text");
     let dragDiv = document.getElementById(id);
@@ -1262,7 +1242,7 @@ function drop_handler(ev) {
         // nodeCopy.setAttribute("onclick", "leftClick(event);")
         // ev.target.appendChild(nodeCopy);
 
-        console.log("finish")
+        // console.log("finish")
         // create a new item, then insert it into the plan and finally update the table
         let current_item = new Item();
         current_item.name = dragDiv.id;
@@ -1301,12 +1281,12 @@ function drop_handler(ev) {
             current_item.layer = "staff";
         }
         plan.addItem(current_item);
-        console.log("asss", plan.items);
+        // console.log("asss", plan.items);
         plan.generateTable();
         current_item.draw();
         // editing information
         // showEditingPage(current_item);
-        console.log(cnt);
+        // console.log(cnt);
         cnt++;
     }
     // here is a bug, when the target location is outside of the "dest_copy" but still inside
@@ -1315,7 +1295,7 @@ function drop_handler(ev) {
         dragDiv.style.cssText = "position:absolute; left: 120px; top: 240px;";
         dragDiv.style.cssText += `position: absolute; left: ${x - offsetx}px; top: ${y - offsety}px;`;
         // update the attributes of dragged div
-        console.log("w yao d id", typeof(dragDiv.id));
+        // console.log("w yao d id", typeof(dragDiv.id));
         // console.log(plan.items);
         let cur = plan.items.get(parseInt(dragDiv.id));
         cur.pos_x = x - offsetx;
@@ -1324,7 +1304,7 @@ function drop_handler(ev) {
 
 }
 function dragend_handler(ev) {
-    console.log("dragEnd");
+    // console.log("dragEnd");
     document.getElementById(ev.currentTarget.id).style.opacity = 1;
     // Remove all of the drag data
     ev.dataTransfer.clearData();
@@ -1332,7 +1312,7 @@ function dragend_handler(ev) {
 
 // when clicking on any other space except the menu, the menu disappear
 document.addEventListener('click', function(e){
-    console.log(e.target.id);
+    // console.log(e.target.id);
     if(e.target.getAttribute("class") != "data" && document.getElementById("editData") && e.target.id != "blankInput"){
         selected_icon_id = -1;
         document.getElementById("editData").remove();
@@ -1340,7 +1320,7 @@ document.addEventListener('click', function(e){
     closeMenu();
 })
 function leftClick(e){
-    console.log("leftClick on the item");
+    // console.log("leftClick on the item");
     let cur_id = parseInt(e.currentTarget.id);
     showEditingPage(plan.items.get(cur_id));
 }
@@ -1419,7 +1399,7 @@ function getJSON(){
     let getRequest = new XMLHttpRequest();
     server_url = "/plan_models_json/" + id;
     getRequest.open("get", server_url);
-    console.log("url:" + server_url)
+    // console.log("url:" + server_url)
     getRequest.send(null)
     getRequest.onload = function (){
         // loaded = true;
@@ -1439,9 +1419,9 @@ function getJSON(){
             
             // deal with the extra values
             let extra_json = server_plan_obj.data.extra1;
-            console.log(extra_json);
+            // console.log(extra_json);
             let extra_obj = JSON.parse(extra_json);
-            console.log(extra_obj);
+            // console.log(extra_obj);
             
             let dateRe = /^day.*date$/;
             let hourRe = /^day.*hour.*\d$/;
