@@ -702,12 +702,12 @@ class GroupManager {
                 
                 // check setup conflict
                 if (this.get_setup_start(cur_id).toDisplayTime() < this.get_setup_duration(dep_id).toDisplayTime()) {
-                    msg += `Conflict: ${this.id2name[cur_id]} begins to setup before its dependency ${this.id2name[dep_id]} finishing setup.\n`;
+                    msg += `<br>Conflict: ${this.id2name[cur_id]} begins to setup before its dependency ${this.id2name[dep_id]} finishing setup.`;
                 }
                 
                 // check breakdown conflict
                 if (this.get_breakdown_duration(cur_id).toDisplayTime() > this.get_breakdown_start(dep_id).toDisplayTime()) {
-                    msg += `Conflict: ${this.id2name[dep_id]} begins to breakdown before its dependency ${this.id2name[cur_id]} finishing breakdown.\n`;
+                    msg += `<br>Conflict: ${this.id2name[dep_id]} begins to breakdown before its dependency ${this.id2name[cur_id]} finishing breakdown.`;
                 }
             }
         }
@@ -814,30 +814,31 @@ class Plan{
         // define a variable named message to store the message
         let message = "";
 
-        // loop through each item in the items
-        function checkDependency(item, key, map){
-            // if the item's dependency is none, then we don't need to check
-            if(item.dependency == "none"){
-                return;
-            }
-            // if the item's dependency is not none, then we need to check if the dependency is satisfied
-            // we need to check if the dependency is in the items
-            if(!map.has(item.dependency)){
-                message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} does not exist\n`;
-                return;
-            }
+        // // loop through each item in the items
+        // function checkDependency(item, key, map){
+        //     // if the item's dependency is none, then we don't need to check
+        //     if(item.dependency == "none"){
+        //         return;
+        //     }
+        //     // if the item's dependency is not none, then we need to check if the dependency is satisfied
+        //     // we need to check if the dependency is in the items
+        //     if(!map.has(item.dependency)){
+        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} does not exist\n`;
+        //         return;
+        //     }
 
-            // if the dependency is in the items, then we need to check if the dependency is satisfied
-            // we need to check if the dependency's end time is earlier than the current item's start time
-            let dependency_item = map.get(item.dependency);
-            if(dependency_item.end_time > item.start_time){
-                message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} ends at ${dependency_item.end_time} which is later than item ${item.item_id}'s start time ${item.start_time}\n`;
-                return;
-            }
-        }
+        //     // if the dependency is in the items, then we need to check if the dependency is satisfied
+        //     // we need to check if the dependency's end time is earlier than the current item's start time
+        //     let dependency_item = map.get(item.dependency);
+        //     if(dependency_item.end_time > item.start_time){
+        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} ends at ${dependency_item.end_time} which is later than item ${item.item_id}'s start time ${item.start_time}\n`;
+        //         return;
+        //     }
+        // }
         
-        this.items.forEach(checkDependency);
+        // this.items.forEach(checkDependency);
 
+        message = this.group_manager.check_group_depend_conflict()
         return message;
     }
 
@@ -1137,16 +1138,18 @@ function clickToCheckDependency(e){
     // flash a message to the user saying "checking dependency"
     const notification = document.getElementById("notification");
     notification.innerHTML = "Checking dependency...";
-
     
     message = plan.check_dependency();
+    // message = '';
 
-    // notification.innerHTML = "Process completed!";
-    setTimeout(() => {
-        notification.innerHTML = "Process completed!";
-      }, 3000); // Wait for 3 seconds (3000 milliseconds)
-    
+    if (message == "") {
+        message = "Great job! No dependency violation detected!";
+    }
+    else {
+        message = message + '<br>Please fix the dependency violation(s) by updating the time and try again!';
+    }
 
+    notification.innerHTML = message;
 }
 
 function clickToSave(e){
