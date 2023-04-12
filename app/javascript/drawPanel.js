@@ -867,12 +867,14 @@ class Plan{
     }
     deleteItem(id){
         if(this.items.has(id)){
+            // check group usage. delete group if needed
+            let item = this.items_array[id];
+            this.group_manager.check_group_usage(item.group_id);
             
+            // has to push in the items_array and items_operation first, then delete it
             this.items_array.push(this.items.get(id));
             this.items_operation.push(-1);
             this.items_idx++;
-
-            // has to push in the items_array and items_operation first, then delete it
             this.items.delete(id);
         }else{
             // no such item
