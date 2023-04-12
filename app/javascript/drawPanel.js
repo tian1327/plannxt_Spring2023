@@ -725,6 +725,7 @@ class GroupManager {
     }
     
     check_group_usage(curr_id) {
+        console.log(`check group usage with curr_id=${curr_id}`);
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
             console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
@@ -878,14 +879,15 @@ class Plan{
     }
     deleteItem(id){
         if(this.items.has(id)){
-            // check group usage. delete group if needed
-            let item = this.items_array[id];
-            this.group_manager.check_group_usage(item.group_id);
-            
             // has to push in the items_array and items_operation first, then delete it
             this.items_array.push(this.items.get(id));
             this.items_operation.push(-1);
             this.items_idx++;
+            
+            // check group usage. delete group if needed
+            let item = this.items_array[id];
+            this.group_manager.check_group_usage(item.group_id);
+            
             this.items.delete(id);
         }else{
             // no such item
