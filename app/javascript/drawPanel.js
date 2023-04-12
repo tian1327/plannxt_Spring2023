@@ -711,7 +711,6 @@ class GroupManager {
                 }
             }
         }
-        console.log(msg);
         return msg;
     }
     
@@ -725,7 +724,6 @@ class GroupManager {
     }
     
     check_group_usage(curr_id) {
-        console.log(`check group usage with curr_id=${curr_id}`);
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
             console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
