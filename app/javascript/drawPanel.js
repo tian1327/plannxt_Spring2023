@@ -352,7 +352,7 @@ canvas.addEventListener("mousedown", function (e) {
         x: e.clientX - canvas.getBoundingClientRect().left,
         y: e.clientY - canvas.getBoundingClientRect().top
     };
-    console.log("mouse position ssssss", mouse.x, mouse.y);
+    // console.log("mouse position ssssss", mouse.x, mouse.y);
     // "shape" here represents the object of dragGraph
     graphs.forEach(function (shape) {
         var offset = {
@@ -450,7 +450,7 @@ function createMenu(e, mouse, id){
     // y = e.clientY;
     x = mouse.x;
     y = mouse.y;
-    console.log(x, y);
+    // console.log(x, y);
     let newDiv = document.createElement("ul");
     newDiv.id = "deletionMenu";
     newDiv.setAttribute("class", "context-menu");
@@ -472,7 +472,7 @@ function createOptionsInMenu(e, str, id, mouse){
 function deleteItem(id, mouse_x, mouse_y){
     console.log("complete deletion");
     // document.getElementById(id).remove();
-    console.log("yyyy",typeof(id))
+    // console.log("yyyy",typeof(id))
     plan.deleteItem(id);
     plan.generateTable();
     plan.draw();
@@ -665,6 +665,13 @@ class GroupManager {
             }
         }
         this.check_group_depend_conflict();
+        
+        // console.log("Group Usage:")
+        // for (let i = 0; i < this.groups.length; i++) {
+        //     if (this.groups[i] != null) {
+        //         console.log(`group id: ${i} with item_cnt: ${this.groups[i].item_cnt}`);
+        //     }
+        // }
     }
     
     set_setup_start(id, expr_obj)        { this.groups[id].setup_start = expr_obj; }
@@ -679,7 +686,6 @@ class GroupManager {
     
     set_depend_group(curr_id, depend_name) {
         if (!(depend_name in this.name2id)) {
-            console.log("dependent group does not exist");
             this.groups[curr_id].depend_id = 0;
         } else {
             let depend_id = this.name2id[depend_name];
@@ -719,14 +725,15 @@ class GroupManager {
         this.groups.splice(id, 1, new group(id, name));
         this.name2id[name] = id;
         this.id2name[id] = name;
-        console.log(`group_manager: create_group: new group ${name} is created with id ${id}`);
+        // console.log(`group_manager: create_group: new group ${name} is created with id ${id}`);
         return id;
     }
     
     check_group_usage(curr_id) {
+        // console.log(`check group usage: group id = ${curr_id}`);
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
-            console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
+            // console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
             this.#delete_group(curr_id);
             this.#check_group_depend(curr_id);
         }
@@ -746,7 +753,6 @@ class GroupManager {
         this.groups[id] = null;
         delete this.name2id[name];
         delete this.id2name[id];
-        console.log(`group ${name} is deleted`)
     }
     
     #find_freed_id() {
@@ -883,7 +889,7 @@ class Plan{
             this.items_idx++;
             
             // check group usage. delete group if needed
-            let item = this.items_array[id];
+            let item = this.items.get(id);
             this.group_manager.check_group_usage(item.group_id);
             
             this.items.delete(id);
