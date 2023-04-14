@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrawPanel</title>
+    <title>Dependency</title>
     <link rel="stylesheet" href="testcss.css">
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="font-awesome.css">
-    <link rel="stylesheet" href="./notify.min.css" />
-    <script src="./notify.min.js"></script>
 </head>
 
 <body class="pace-done" data-new-gr-c-s-check-loaded="14.1056.0" data-gr-ext-installed>
@@ -33,18 +31,13 @@
         
 
         <div id="inputs" class="row border-bottom">
-            <div id="buttons" class="navbar-header col-md-2 dashboard-header">
-                
+            <div id="buttons" class="navbar-header col-md-3 dashboard-header">
                 <%# <button onclick="clickToEdit(event);">Edit</button> %>
                 <button onclick="clickToSave(event);">Save</button>
                 <button onclick="clickToUndo(event);">Undo</button>
                 <button onclick="clickToRedo(event);">Redo</button>
-                <%# route to the dependency page under current plan %>
-                <%# <%= link_to "Set Dependency", "/dependency" %>  
-                <%# <button id='notifyBtn' onclick="clickToCheckDependency(event);">Check Dependency</button>
-                <div id="notification"></div> %>
-
-                <%# <%= link_to "Return to Plans", "/plan_models/" %> 
+                <%# <button onclick="clickToRedo(event);">Set Dependency</button> %>
+                <%= link_to "TestTest", "/plan_models/" %>
             </div>
             
             <div class="col-md-2 dashboard-header">
@@ -213,7 +206,7 @@
             <div id="panel" class="row">
         
                 <!-- table -->
-                <div id="table" class="col-lg-4" style="max-height: 350px; width: 1000px; overflow-x: auto; overflow-y: scroll;">
+                <div id="table" class="col-lg-4" style="max-height: 350px; width: 1500px; overflow-x: auto; overflow-y: scroll;">
                     <table id="tableItems" border="1" cellspacing="0" class="table table-hover no-margins">
                         <thead>
                             <tr>
@@ -221,7 +214,7 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Group</th>
-                                <th>Depend_goup</th>
+                                <th>Depend_on_goup</th>
                                 <th>Setup_start</th>
                                 <th>Setup_end</th>
                                 <th>Breakdown_start</th>
@@ -235,14 +228,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div id="buttons" class="navbar-header col-md-3 dashboard-header">
-                    <%# route to the dependency page under current plan %>
-                    <%# <%= link_to "Set Dependency", "/dependency" %>  
-                    <button id='notifyBtn' onclick="clickToCheckDependency(event);">Check Dependency</button>
-                    <div id="notification"></div>
-                </div>
-
             </div>
         </div>        
     </div>

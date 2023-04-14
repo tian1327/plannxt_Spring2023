@@ -176,11 +176,10 @@ dragGraph.prototype = {
     shapeDraw: function () {
         let ctx = this.context;
         ctx.lineWidth = this.lineWidth;
-        console.log("ctx.lineWidth = ", ctx.lineWidth);
 
         if (this.graphShape == "rect_room"){
-            console.log(this.x, this.y, this.w, this.h)
-            console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
+            // console.log(this.x, this.y, this.w, this.h)
+            // console.log(canvas.width, canvas.height, canvasWidth, canvasHeight);
             // first save the ctx
             ctx.save();
             // then translate to the new center
@@ -353,7 +352,7 @@ canvas.addEventListener("mousedown", function (e) {
         x: e.clientX - canvas.getBoundingClientRect().left,
         y: e.clientY - canvas.getBoundingClientRect().top
     };
-    console.log("mouse position ssssss", mouse.x, mouse.y);
+    // console.log("mouse position ssssss", mouse.x, mouse.y);
     // "shape" here represents the object of dragGraph
     graphs.forEach(function (shape) {
         var offset = {
@@ -451,7 +450,7 @@ function createMenu(e, mouse, id){
     // y = e.clientY;
     x = mouse.x;
     y = mouse.y;
-    console.log(x, y);
+    // console.log(x, y);
     let newDiv = document.createElement("ul");
     newDiv.id = "deletionMenu";
     newDiv.setAttribute("class", "context-menu");
@@ -473,7 +472,7 @@ function createOptionsInMenu(e, str, id, mouse){
 function deleteItem(id, mouse_x, mouse_y){
     console.log("complete deletion");
     // document.getElementById(id).remove();
-    console.log("yyyy",typeof(id))
+    // console.log("yyyy",typeof(id))
     plan.deleteItem(id);
     plan.generateTable();
     plan.draw();
@@ -600,7 +599,8 @@ class group {
     constructor(group_id, group_name) {
         this.id = group_id;
         this.name = group_name;
-        this.owner = "n/a";
+        this.owner = "None";
+        this.depend_id = 0;
         
         let current_time = new TimeExpression();
         current_time.timebar_value = document.getElementById("timebar").value;
@@ -617,26 +617,26 @@ class GroupManager {
         this.groups = new Array();
         
         this.name2id = new Object();
-        this.id2name = new Object();
-        
-        // dummy class
+        this.id2name = new Object(); 
+
+        // dummy class for every newly created item
         this.groups.push(new group(0));
-        this.id2name[0] = "default";
-        this.name2id["default"] = 0;
+        this.id2name[0] = "Default";
+        this.name2id["Default"] = 0;
     }
     
     // check whether the group already exist:
     // if yes, return the corresponding group_id;
     // if no, create a new group and return group_id of the new group;
-    generate_group_id(new_name, curr_id) {
+    generate_group_id(curr_id, new_name) {
         let new_id;
         if (new_name in this.name2id) {
             new_id = this.name2id[new_name];
             this.groups[new_id].item_cnt++;
-            this.#check_group_usage(curr_id);
         } else {
             new_id = this.#create_group(new_name);
         }
+        this.check_group_usage(curr_id);
         return new_id;
     }
     
@@ -657,11 +657,21 @@ class GroupManager {
     
     update_times() {
         for (let i = 0; i < this.groups.length; i++) {
-            this.groups[i].setup_start.calculateStartTime();
-            this.groups[i].setup_duration.calculateEndTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_start.calculateStartTime(this.groups[i].setup_start);
-            this.groups[i].breakdown_duration.calculateEndTime(this.groups[i].breakdown_start);
+            if (this.groups[i] != null) {
+                this.groups[i].setup_start.calculateStartTime();
+                this.groups[i].setup_duration.calculateEndTime(this.groups[i].setup_start);
+                this.groups[i].breakdown_start.calculateStartTime(this.groups[i].setup_start);
+                this.groups[i].breakdown_duration.calculateEndTime(this.groups[i].breakdown_start);
+            }
         }
+        this.check_group_depend_conflict();
+        
+        // console.log("Group Usage:")
+        // for (let i = 0; i < this.groups.length; i++) {
+        //     if (this.groups[i] != null) {
+        //         console.log(`group id: ${i} with item_cnt: ${this.groups[i].item_cnt}`);
+        //     }
+        // }
     }
     
     set_setup_start(id, expr_obj)        { this.groups[id].setup_start = expr_obj; }
@@ -674,21 +684,67 @@ class GroupManager {
     get_breakdown_start(id)              { return this.groups[id].breakdown_start; }
     get_breakdown_duration(id)           { return this.groups[id].breakdown_duration; }
     
+    set_depend_group(curr_id, depend_name) {
+        if (!(depend_name in this.name2id)) {
+            this.groups[curr_id].depend_id = 0;
+        } else {
+            let depend_id = this.name2id[depend_name];
+            this.groups[curr_id].depend_id = depend_id;
+        }
+    }
+    
+    get_depend_group(id) {
+        console.assert(this.groups[id] != null, `group_manager: set_group_owner: accessing groups with invalid group_id ${id}`);
+        let depend_name = this.id2name[this.groups[id].depend_id];
+        return depend_name;
+    }
+    
+    check_group_depend_conflict() {
+        let msg = "";
+        for (let i = 1; i <= this.groups.length; i++) {
+            if (this.groups[i] != null && this.groups[i].depend_id != 0) {
+                let cur_id = i;
+                let dep_id = this.groups[i].depend_id;
+                
+                // check setup conflict
+                if (this.get_setup_start(cur_id).toDisplayTime() < this.get_setup_duration(dep_id).toDisplayTime()) {
+                    msg += `<br>Conflict: ${this.id2name[cur_id]} begins to setup before its dependency ${this.id2name[dep_id]} finishing setup.`;
+                }
+                
+                // check breakdown conflict
+                if (this.get_breakdown_duration(cur_id).toDisplayTime() > this.get_breakdown_start(dep_id).toDisplayTime()) {
+                    msg += `<br>Conflict: ${this.id2name[dep_id]} begins to breakdown before its dependency ${this.id2name[cur_id]} finishing breakdown.`;
+                }
+            }
+        }
+        return msg;
+    }
     
     #create_group(name) {
         let id = this.#find_freed_id();
         this.groups.splice(id, 1, new group(id, name));
         this.name2id[name] = id;
         this.id2name[id] = name;
-        console.log(`group_manager: create_group: new group ${name} is created with id ${id}`);
+        // console.log(`group_manager: create_group: new group ${name} is created with id ${id}`);
         return id;
     }
     
-    #check_group_usage(curr_id) {
+    check_group_usage(curr_id) {
+        // console.log(`check group usage: group id = ${curr_id}`);
         if (curr_id == 0) { return; }
         if (--this.groups[curr_id].item_cnt == 0) {
-            console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
+            // console.log(`group_manager: check_group_usage: group ${this.id2name[curr_id]} no longer in use, deleting` );
             this.#delete_group(curr_id);
+            this.#check_group_depend(curr_id);
+        }
+    }
+    
+    // set depend_id to default if its depend group is deleted
+    #check_group_depend(id) {
+        for (let i = 1; i <= this.groups.length; i++) {
+            if (this.groups[i] != null && this.groups[i].depend_id == id) {
+                this.groups[i].depend_id = 0;
+            }
         }
     }
     
@@ -697,7 +753,6 @@ class GroupManager {
         this.groups[id] = null;
         delete this.name2id[name];
         delete this.id2name[id];
-        console.log(`group ${name} is deleted`)
     }
     
     #find_freed_id() {
@@ -766,6 +821,43 @@ class Plan{
         this.draw();
     }
 
+    check_dependency(){
+
+        // loop through each item, continue if the current item's dependency is none
+        // otherwise, check if the dependency is satisfied
+
+        // define a variable named message to store the message
+        let message = "";
+
+        // // loop through each item in the items
+        // function checkDependency(item, key, map){
+        //     // if the item's dependency is none, then we don't need to check
+        //     if(item.dependency == "none"){
+        //         return;
+        //     }
+        //     // if the item's dependency is not none, then we need to check if the dependency is satisfied
+        //     // we need to check if the dependency is in the items
+        //     if(!map.has(item.dependency)){
+        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} does not exist\n`;
+        //         return;
+        //     }
+
+        //     // if the dependency is in the items, then we need to check if the dependency is satisfied
+        //     // we need to check if the dependency's end time is earlier than the current item's start time
+        //     let dependency_item = map.get(item.dependency);
+        //     if(dependency_item.end_time > item.start_time){
+        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} ends at ${dependency_item.end_time} which is later than item ${item.item_id}'s start time ${item.start_time}\n`;
+        //         return;
+        //     }
+        // }
+        
+        // this.items.forEach(checkDependency);
+
+        message = this.group_manager.check_group_depend_conflict()
+        return message;
+    }
+
+
     toJSON() {
         var t = {
             "items": Object.fromEntries(this.items),
@@ -791,12 +883,15 @@ class Plan{
     }
     deleteItem(id){
         if(this.items.has(id)){
-            
+            // has to push in the items_array and items_operation first, then delete it
             this.items_array.push(this.items.get(id));
             this.items_operation.push(-1);
             this.items_idx++;
-
-            // has to push in the items_array and items_operation first, then delete it
+            
+            // check group usage. delete group if needed
+            let item = this.items.get(id);
+            this.group_manager.check_group_usage(item.group_id);
+            
             this.items.delete(id);
         }else{
             // no such item
@@ -843,6 +938,7 @@ function generateTableItems(value, key, map){
   <td class="data" style=${style}>${item_id}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'name')">${value.name}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'group')">${plan.group_manager.get_group_name(group_id)}</td>
+  <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'depend_group')">${plan.group_manager.get_depend_group(group_id)}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${plan.group_manager.get_setup_start(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${plan.group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${plan.group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
@@ -948,7 +1044,7 @@ function clickToEditData(e, item_id, attr){
     oy = table.getBoundingClientRect().top;
     x = e.currentTarget.getBoundingClientRect().left;
     y = e.currentTarget.getBoundingClientRect().top;
-    console.log(item_id, x, y, ox, oy, e.currentTarget);
+    // console.log(item_id, x, y, ox, oy, e.currentTarget);
     // let newDiv = document.createElement("div");
     // newDiv.id = "editData";
     // newDiv.style.cssText = `position: absolute; left: ${x}px; top: ${y}px;`;
@@ -1008,9 +1104,12 @@ function changeData(e, id, attr){
             plan.group_manager.set_owner(group_id, val);
             break;
         case 'group':
-            let new_group_id  = plan.group_manager.generate_group_id(val, group_id);
+            let new_group_id  = plan.group_manager.generate_group_id(group_id, val);
             item.group_id = new_group_id;
             break;
+        case 'depend_group':
+            plan.group_manager.set_depend_group(group_id, val);
+            break;            
         case 'setup_start':
             plan.group_manager.set_setup_start(group_id, new TimeExpression(val)); 
             break;
@@ -1048,6 +1147,25 @@ function clickToRedo(e){
 
     plan.redo();
 
+}
+
+function clickToCheckDependency(e){
+
+    // flash a message to the user saying "checking dependency"
+    const notification = document.getElementById("notification");
+    notification.innerHTML = "Checking dependency...";
+    
+    message = plan.check_dependency();
+    // message = '';
+
+    if (message == "") {
+        message = "Great job! No dependency violation detected!";
+    }
+    else {
+        message = message + '<br>Please fix the dependency violation(s) by updating the time and try again!';
+    }
+
+    notification.innerHTML = message;
 }
 
 function clickToSave(e){
@@ -1119,7 +1237,7 @@ function dragstart_handler(ev) {
 }
 function dragover_handler(ev) {
     ev.preventDefault();
-    console.log("dragOver");
+    // console.log("dragOver");
 }
 
 function drop_handler(ev) {
@@ -1129,7 +1247,7 @@ function drop_handler(ev) {
     x = ev.clientX - canvas.getBoundingClientRect().left;
     y = ev.clientY - canvas.getBoundingClientRect().top;
     // console.log(ev.clientX, ev.clientY, canvas.getBoundingClientRect().left, canvas.getBoundingClientRect().top);
-    console.log("Drop");
+    // console.log("Drop");
     ev.preventDefault();
     let id = ev.dataTransfer.getData("text");
     let dragDiv = document.getElementById(id);
@@ -1145,7 +1263,7 @@ function drop_handler(ev) {
         // nodeCopy.setAttribute("onclick", "leftClick(event);")
         // ev.target.appendChild(nodeCopy);
 
-        console.log("finish")
+        // console.log("finish")
         // create a new item, then insert it into the plan and finally update the table
         let current_item = new Item();
         current_item.name = dragDiv.id;
@@ -1184,12 +1302,12 @@ function drop_handler(ev) {
             current_item.layer = "staff";
         }
         plan.addItem(current_item);
-        console.log("asss", plan.items);
+        // console.log("asss", plan.items);
         plan.generateTable();
         current_item.draw();
         // editing information
         // showEditingPage(current_item);
-        console.log(cnt);
+        // console.log(cnt);
         cnt++;
     }
     // here is a bug, when the target location is outside of the "dest_copy" but still inside
@@ -1198,7 +1316,7 @@ function drop_handler(ev) {
         dragDiv.style.cssText = "position:absolute; left: 120px; top: 240px;";
         dragDiv.style.cssText += `position: absolute; left: ${x - offsetx}px; top: ${y - offsety}px;`;
         // update the attributes of dragged div
-        console.log("w yao d id", typeof(dragDiv.id));
+        // console.log("w yao d id", typeof(dragDiv.id));
         // console.log(plan.items);
         let cur = plan.items.get(parseInt(dragDiv.id));
         cur.pos_x = x - offsetx;
@@ -1207,7 +1325,7 @@ function drop_handler(ev) {
 
 }
 function dragend_handler(ev) {
-    console.log("dragEnd");
+    // console.log("dragEnd");
     document.getElementById(ev.currentTarget.id).style.opacity = 1;
     // Remove all of the drag data
     ev.dataTransfer.clearData();
@@ -1215,7 +1333,7 @@ function dragend_handler(ev) {
 
 // when clicking on any other space except the menu, the menu disappear
 document.addEventListener('click', function(e){
-    console.log(e.target.id);
+    // console.log(e.target.id);
     if(e.target.getAttribute("class") != "data" && document.getElementById("editData") && e.target.id != "blankInput"){
         selected_icon_id = -1;
         document.getElementById("editData").remove();
@@ -1223,7 +1341,7 @@ document.addEventListener('click', function(e){
     closeMenu();
 })
 function leftClick(e){
-    console.log("leftClick on the item");
+    // console.log("leftClick on the item");
     let cur_id = parseInt(e.currentTarget.id);
     showEditingPage(plan.items.get(cur_id));
 }
@@ -1302,7 +1420,7 @@ function getJSON(){
     let getRequest = new XMLHttpRequest();
     server_url = "/plan_models_json/" + id;
     getRequest.open("get", server_url);
-    console.log("url:" + server_url)
+    // console.log("url:" + server_url)
     getRequest.send(null)
     getRequest.onload = function (){
         // loaded = true;
@@ -1322,9 +1440,9 @@ function getJSON(){
             
             // deal with the extra values
             let extra_json = server_plan_obj.data.extra1;
-            console.log(extra_json);
+            // console.log(extra_json);
             let extra_obj = JSON.parse(extra_json);
-            console.log(extra_obj);
+            // console.log(extra_obj);
             
             let dateRe = /^day.*date$/;
             let hourRe = /^day.*hour.*\d$/;
