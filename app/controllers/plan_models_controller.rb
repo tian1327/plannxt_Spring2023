@@ -224,6 +224,7 @@ class PlanModelsController < ApplicationController
   def import
     @plan_model = PlanModel.new(JSON.parse(params[:upload].read)).dup
     flush_users
+    @plan_model.event_steps.build
     @plan_model.save
     flash[:notice] = "Plan '#{@plan_model.name}' imported successfully."
     redirect_to edit_page_path
