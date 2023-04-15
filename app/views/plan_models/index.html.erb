@@ -43,13 +43,13 @@
               <col width="20%">
               <col width="20%">
             </colgroup>
-            <thead class="u-custom-font u-font-courier-new u-palette-4-base u-table-header u-table-header-1">
+            <thead class="u-custom-font u-font-courier-new u-palette-1-base u-table-header u-table-header-1">
               <tr style="height: 59px;">
-                <th class="u-table-cell">Plan Name</th>
-                <th class="u-table-cell">Creator</th>
-                <th class="u-table-cell">Create time</th>
-                <th class="u-table-cell">Update time</th>
-                <th class="u-table-cell">More</th>
+                <th class="u-table-cell">Name</th>
+                <th class="u-table-cell">Owner</th>
+                <th class="u-table-cell">Created</th>
+                <th class="u-table-cell">Updated</th>
+                <th class="u-table-cell">Actions</th>
               </tr>
             </thead>
             <tbody class="u-table-body">
@@ -59,13 +59,13 @@
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= @user.find(plan_model.creator).name %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.created_at %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.updated_at %> </td>
-                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> 
-                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit", target: "_blank" %> /
-                  <%= link_to "Manage", "#{plan_model_path(plan_model)}/draw_panel" %> /
-                  <%= link_to "Export", "#{plan_model_path(plan_model)}/export", target: "_blank" %> /
-                  <%= link_to "Copy", "#{plan_model_path(plan_model)}/duplicate"  %> /
-                  <%= link_to "Delete", "#{plan_model_path(plan_model)}/destroy" %> /
-                  <%= link_to "Share", "#{plan_model_path(plan_model)}/sharing" %>
+                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell u-layout-row"> 
+                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit", target: "_blank", :class => " u-layout-cell"%>
+                  <%= link_to "Manage", "#{plan_model_path(plan_model)}/draw_panel", :class => " u-layout-cell"%>
+                  <%= link_to "Export", "#{plan_model_path(plan_model)}/export", target: "_blank", :class => " u-layout-cell"%>
+                  <%= link_to "Share", "#{plan_model_path(plan_model)}/sharing", :class => " u-layout-cell"%>
+                  <%= link_to "Copy", "#{plan_model_path(plan_model)}/duplicate" , :class => " u-layout-cell"%>
+                  <%= link_to "Delete", "#{plan_model_path(plan_model)}/destroy", :class => " u-layout-cell"%>
                   <% if Current.user.level.present? and Current.user.level >= 3 %>
                   <%= link_to "View Raw Data", plan_model %> /
                   <% end %>
@@ -85,11 +85,13 @@
           <% end %>
         </div>
         <h4 class="u-text u-text-default u-text-1"> Total <%= @plan_model.count %> plans</h4>
-        <a <%= link_to "Create a new plan", new_plan_model_path, :class=>"u-btn u-button-style u-btn-1" %></a>
-        <%= form_with url: "/import", multipart: true do |f| %>
-          <%= f.file_field :upload %>
-          <%= f.submit "Import an existing plan", :class => "u-btn u-button-style u-btn-1" %>
-        <% end %>
+        <%= link_to "Create a new plan", new_plan_model_path, :class=>"u-btn u-button-style u-btn-1 u-hover-palette-2-base" %>
+        <div>
+          <%= form_with url: "/import", multipart: true do |f| %>
+            <%= f.file_field :upload, :class => "u-layout-cell" %>
+            <%= f.submit "Import an existing plan", :class => "u-btn u-button-style u-btn-1 u-hover-palette-2-base u-layout-cell" %>
+          <% end %>
+        </div>
       </div>
     </section>
     
