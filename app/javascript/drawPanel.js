@@ -16,6 +16,7 @@ let defaultSize = new Map();
 let selected_icon_id = -1;
 let date_list = [];
 let breakdown_time = [];
+let conflict_groupid;
 defaultSize.set("rect_room", [200, 200]);
 defaultSize.set("round_room", [200, 200]);
 defaultSize.set("triangle_room", [200, 200]);
@@ -540,6 +541,7 @@ class Item{
     breakdown_finished;
     marked;
     onselected;
+    dependency_conflict;
 
     // type should be consistent with the id of the items in the repository shown in HTML
     type;
@@ -555,6 +557,7 @@ class Item{
         this.breakdown_finished = false;
         this.marked = false;
         this.onselected = false;
+        this.dependency_conflict = false;
         this.group_id = 0;
     }
     //calculateExpression(value.start_time, value.item_id)
@@ -703,6 +706,8 @@ class GroupManager {
     
     check_group_depend_conflict() {
         let msg = "";
+        let conflict_groupid = new Map ();
+
         for (let i = 1; i <= this.groups.length; i++) {
             if (this.groups[i] != null && this.groups[i].depend_id != 0) {
                 let cur_id = i;
@@ -711,15 +716,19 @@ class GroupManager {
                 // check setup conflict
                 if (this.get_setup_start(cur_id).toDisplayTime() < this.get_setup_duration(dep_id).toDisplayTime()) {
                     msg += `<br>Conflict: ${this.id2name[cur_id]} begins to setup before its dependency ${this.id2name[dep_id]} finishing setup.`;
+                    conflict_groupid.set(cur_id, true);                   
                 }
                 
                 // check breakdown conflict
                 if (this.get_breakdown_duration(cur_id).toDisplayTime() > this.get_breakdown_start(dep_id).toDisplayTime()) {
                     msg += `<br>Conflict: ${this.id2name[dep_id]} begins to breakdown before its dependency ${this.id2name[cur_id]} finishing breakdown.`;
+                    conflict_groupid.set(cur_id, true);    
                 }
+
             }
         }
-        return msg;
+        return {'message':msg,
+                'conflict_groupid': conflict_groupid};                
     }
     
     #create_group(name) {
@@ -825,37 +834,15 @@ class Plan{
 
     check_dependency(){
 
-        // loop through each item, continue if the current item's dependency is none
-        // otherwise, check if the dependency is satisfied
-
-        // define a variable named message to store the message
         let message = "";
 
-        // // loop through each item in the items
-        // function checkDependency(item, key, map){
-        //     // if the item's dependency is none, then we don't need to check
-        //     if(item.dependency == "none"){
-        //         return;
-        //     }
-        //     // if the item's dependency is not none, then we need to check if the dependency is satisfied
-        //     // we need to check if the dependency is in the items
-        //     if(!map.has(item.dependency)){
-        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} does not exist\n`;
-        //         return;
-        //     }
+        let res = this.group_manager.check_group_depend_conflict();
+        message = res.message;
+        conflict_groupid = res.conflict_groupid;
+        console.log('message:', message)
+        console.log('conflict_groupid:', conflict_groupid)
+        this.items.forEach(markConflict);
 
-        //     // if the dependency is in the items, then we need to check if the dependency is satisfied
-        //     // we need to check if the dependency's end time is earlier than the current item's start time
-        //     let dependency_item = map.get(item.dependency);
-        //     if(dependency_item.end_time > item.start_time){
-        //         message += `item ${item.item_id} depends on item ${item.dependency}, but item ${item.dependency} ends at ${dependency_item.end_time} which is later than item ${item.item_id}'s start time ${item.start_time}\n`;
-        //         return;
-        //     }
-        // }
-        
-        // this.items.forEach(checkDependency);
-
-        message = this.group_manager.check_group_depend_conflict()
         return message;
     }
 
@@ -922,9 +909,27 @@ function drawItems(value, key, map){
     // console.log(value);
     value.draw();
 }
+
+
+function markConflict(value, key, map){
+    // console.log(value);
+    let item_groupid = value.group_id;
+    if (item_groupid != 0 && conflict_groupid.has(item_groupid)) {
+        value.dependency_conflict = true;
+    }
+    else{
+        value.dependency_conflict = false;
+    }
+}
+
+
 function generateTableItems(value, key, map){
   let style;
-  if(!value.setup_finished && !value.breakdown_finished && !value.onselected && !value.marked){
+  if (value.dependency_conflict){ // mark row in red if there is a dependency conflict
+    style = "background-color:#F79F8D;";
+  }
+  else if(!value.setup_finished && !value.breakdown_finished && !value.onselected && !value.marked){
+//   if(!value.setup_finished && !value.breakdown_finished && !value.onselected && !value.marked){    
     style = "display: none;";
   }
   else if ((!value.setup_finished && !value.breakdown_finished && value.onselected) || (!value.setup_finished && !value.breakdown_finished && value.marked)) { // mark row in yellow if it is selected or marked
@@ -1176,10 +1181,13 @@ function clickToCheckDependency(e){
         message = "Great job! No dependency violation detected!";
     }
     else {
-        message = message + '<br>Please fix the dependency violation(s) by updating the time and try again!';
+        message = message + '<br>Please fix the dependency violation(s) by updating the time and try again!<br>Rows with dependency violation are colored in red.';
     }
 
     notification.innerHTML = message;
+
+    // generte the table to colorcode the confilct rows with red
+    plan.generateTable();
 }
 
 function clickToSave(e){
