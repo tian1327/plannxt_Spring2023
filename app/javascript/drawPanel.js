@@ -536,7 +536,8 @@ class Item{
     name;
     group_id;
 
-    finished;
+    setup_finished;
+    breakdown_finished;
     marked;
     onselected;
 
@@ -550,7 +551,8 @@ class Item{
     description;
     lineWidth;
     constructor(){
-        this.finished = false;
+        this.setup_finished = false;
+        this.breakdown_finished = false;
         this.marked = false;
         this.onselected = false;
         this.group_id = 0;
@@ -922,10 +924,10 @@ function drawItems(value, key, map){
 }
 function generateTableItems(value, key, map){
   let style;
-  if(!value.finished && !value.onselected && !value.marked){
+  if(!value.setup_finished && !value.breakdown_finished && !value.onselected && !value.marked){
     style = "display: none;";
   }
-  else if ((!value.finished && value.onselected) || (!value.finished && value.marked)) { // mark row in yellow if it is selected or marked
+  else if ((!value.setup_finished && !value.breakdown_finished && value.onselected) || (!value.setup_finished && !value.breakdown_finished && value.marked)) { // mark row in yellow if it is selected or marked
     style = "background-color:#f6dc6f;";
   }
   else{
@@ -941,15 +943,18 @@ function generateTableItems(value, key, map){
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'depend_group')">${plan.group_manager.get_depend_group(group_id)}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_start')">${plan.group_manager.get_setup_start(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'setup_end')">${plan.group_manager.get_setup_duration(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style}> <input type="checkbox" id="checkbox_setup_${item_id}" onchange='clickToChangeSetupState(event, ${item_id})'/></td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_start')">${plan.group_manager.get_breakdown_start(group_id).toDisplayTime()}</td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'breakdown_end')">${plan.group_manager.get_breakdown_duration(group_id).toDisplayTime()}</td>
+  <td class="data" style=${style}> <input type="checkbox" id="checkbox_breakdown_${item_id}" onchange='clickToChangeBreakdownState(event, ${item_id})'/></td>
   <td class="data" style=${style} onclick="clickToEditData(event, ${item_id}, 'owner')">${plan.group_manager.get_owner(group_id)}</td>
-  <td class="data" style=${style}> <input type="checkbox" id="checkbox_${item_id}" onchange='clickToChangeState(event, ${item_id})'/></td>
+  
   </tr>`;
     
   $("#tableItemsBody").append(tr);
   document.getElementById(`checkbox_mark_${value.item_id}`).checked = value.marked;
-  document.getElementById(`checkbox_${value.item_id}`).checked = value.finished;
+  document.getElementById(`checkbox_setup_${value.item_id}`).checked = value.setup_finished;
+  document.getElementById(`checkbox_breakdown_${value.item_id}`).checked = value.breakdown_finished;
 }
 
 function clickToSelectTop(){
@@ -1085,12 +1090,21 @@ function clickToMark(e, item_id){
     plan.draw();
 }
 
-function clickToChangeState(e, item_id){
+function clickToChangeSetupState(e, item_id){
     // console.log("uuuuu", e.currentTarget.getAttribute("class"));
     let current_item = plan.items.get(parseInt(item_id));
-    current_item.finished = !current_item.finished;
+    current_item.setup_finished = !current_item.setup_finished;
     plan.generateTable();
 }
+
+function clickToChangeBreakdownState(e, item_id){
+    // console.log("uuuuu", e.currentTarget.getAttribute("class"));
+    let current_item = plan.items.get(parseInt(item_id));
+    current_item.breakdown_finished = !current_item.breakdown_finished;
+    plan.generateTable();
+}
+
+
 function changeData(e, id, attr){
     // console.log((e.value);
     let item = plan.items.get(id);
