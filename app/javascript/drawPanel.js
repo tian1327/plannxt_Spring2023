@@ -1,5 +1,6 @@
-let timebar_checked = false;
-let timebar_checkbox = document.getElementById("checktimebar");
+let show_all = false;
+let showall_checkbox = document.getElementById("show_all");
+showall_checkbox.checked = show_all;
 let cnt = 0;
 let server_plan_obj;
 let server_url;
@@ -25,16 +26,24 @@ defaultSize.set("couch", [20, 20]);
 defaultSize.set("camera", [25, 20]);
 defaultSize.set("speaker", [35, 30]);
 
-timebar_checkbox.addEventListener("click", function(){
-    if (this.checked) {
-        // Execute some JavaScript function here
-        console.log("Checkbox is checked!");
-        timebar_checked = true;
-    } else {        
-        console.log("Checkbox is not checked.");
-        timebar_checked = false;
-    }
-});   
+// timebar_checkbox.addEventListener("click", function(){
+//     timebar_checked = !timebar_checked;
+//     console.log("timebar_checked: ", timebar_checked);
+//     // if (this.checked) {
+//     //     // Execute some JavaScript function here
+//     //     console.log("Checkbox is checked!");
+//     //     timebar_checked = true;
+//     // } else {        
+//     //     console.log("Checkbox is not checked.");
+//     //     timebar_checked = false;
+//     // }
+// });   
+
+clickToShowAll = function(){
+    show_all = !show_all;
+    console.log("show_all: ", show_all);
+    plan.draw();
+}
 
 class TimeExpression {
   constructor(expression) {
@@ -571,7 +580,7 @@ class Item{
     }
     //calculateExpression(value.start_time, value.item_id)
     draw(){
-        if(plan.group_manager.get_setup_start(this.group_id).timebar_value > time || plan.group_manager.get_breakdown_duration(this.group_id).timebar_value < time){
+        if( !show_all && (plan.group_manager.get_setup_start(this.group_id).timebar_value > time || plan.group_manager.get_breakdown_duration(this.group_id).timebar_value < time)){
             return;
         }
         if((this.layer == "furniture" && !fur_selected) || (this.layer == "electrical" && !elec_selected) || (this.layer == "staff" && !staff_selected)){
@@ -1199,7 +1208,7 @@ function clickToSave(e){
 }
 function selectTheTime(){
 
-    if (timebar_checked == false){
+    if (show_all == true){
         return;
     }
 
