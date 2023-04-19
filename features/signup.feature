@@ -30,29 +30,3 @@ Feature: sign up
 		#And I fill in "Password confirmation" with "admin2"
 		And I press "Update"
 		Then I should see "Password Updated"
-
-  		
-
-
-
-
-
-
-
-
-# 	Scenario: log in with admin account
-#   		Given I am on the home page
-#   		Then I should see "Plannxt"
-#   		Then I should see the canvas
-#   		Then I should see the item menue
-
-# 	Scenario: View canvas page
-#   		Given I am on the canvas page
-#   		Then I should see "Plannxt"
-#   		Then I should see the canvas
-#   		Then I should see the item menue
-  		
-	# Scenario: Show saved data
-  	# 	Given I have received the saved data
-  	# 	Then I should see event icons on canvas
-
