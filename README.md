@@ -1,8 +1,8 @@
-# CSCE606 - Project Plannxt
+# CSCE606 - Project Planxt
 
 **Team Spring 2023**
 
-[[Deployed App on Heroku](https://plannxt.herokuapp.com/)]
+[[Deployed App on Heroku](https://planxt.herokuapp.com/)]
 
 
 Instructions given below are based on Cloud9 environment. However, you can use your own machine for develop and testing. The app is deployed on Heroku for production.
@@ -74,7 +74,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * Register a Heroku account
   * Log into Heroku with `heroku login -i`, enter your email
   * If multi-factor authentication is enabled, login the Heroku webpage and get the API key as password to enter in CLI
-  * Create an app with `heroku create plannxt`
+  * Create an app with `heroku create planxt`
   * Push code to App repo on Heroku, `git push heroku main`
   * Migrate database on Heroku, `heroku run rake db:schema:load db:migrate`
   * App is deployed to Heroku, go to the website and test it out
