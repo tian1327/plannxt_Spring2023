@@ -1083,6 +1083,11 @@ function clickToSave(e){
     putRequest.send(sentJSON);
     return;
 }
+
+function clickToPreview(e) {
+    console.log("preview");
+}
+
 function selectTheTime(){
     // console.log("test clicking the timebar");
     let current_time = new TimeExpression();

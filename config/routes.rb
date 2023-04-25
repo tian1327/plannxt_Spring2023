@@ -52,4 +52,6 @@ Rails.application.routes.draw do
   
   
   get "plan_models/:id/:name", to: redirect('/frontend/%{name}'), status: 302, name: /.*/
+  
+  get 'preview', to: 'preview#index'
 end
