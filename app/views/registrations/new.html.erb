@@ -27,8 +27,8 @@
     <meta property="og:title" content="login">
     <meta property="og:type" content="website">
   </head>
-  <body class="u-body u-xl-mode">
-    <section class="u-align-center u-clearfix u-palette-2-base u-section-1" id="sec-a427">
+  <body class="u-body u-xl-mode u-tabs">
+    <section class="u-align-center u-clearfix u-palette-1-base u-section-1" id="sec-a427" style="flex: 1 1 auto;">
       <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <div class="u-clearfix u-expanded-width u-gutter-0 u-layout-wrap u-layout-wrap-1">
           <div class="u-layout">
@@ -39,7 +39,7 @@
               <div class="u-align-center u-container-style u-layout-cell u-size-30-lg u-size-30-xl u-size-60-md u-size-60-sm u-size-60-xs u-white u-layout-cell-2">
                 <div class="u-container-layout u-valign-middle u-container-layout-2">
                   <h2 class="u-text u-text-default u-text-1">Sign Up</h2>
-                  <div class="u-border-3 u-border-palette-2-base u-line u-line-horizontal u-line-1"></div>
+                  <div class="u-border-3 u-border-palette-1-base u-line u-line-horizontal u-line-1"></div>
                   <div class="u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-form u-login-control u-form-1">
                       
                       <%= form_with model: @user, url: sign_up_path, :class => "u-clearfix u-form-custom-backend u-form-spacing-20 u-form-vertical u-inner-form" do |f| %>
@@ -60,7 +60,7 @@
                         <%= f.password_field :password_confirmation, id: 'password_confirmation', :class => "u-grey-10 u-input u-input-rectangle u-input-2" %>
                         </div>
                         <div class="u-align-left u-form-group u-form-submit">
-                        <a href="#" class="u-border-none u-btn u-btn-submit u-button-style u-palette-2-base u-btn-1">Sign Up</a>
+                        <a href="#" class="u-border-none u-btn u-btn-submit u-button-style u-palette-1-base u-btn-1 u-hover-palette-2-base">Sign Up</a>
                         <%= f.submit 'Sign Up', :class => "u-form-control-hidden" %>
                         </div>
                         <input type="hidden" value="" name="recaptchaResponse">

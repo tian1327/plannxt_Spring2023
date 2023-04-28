@@ -13,18 +13,19 @@
   <body>
     
     
-    <header class="u-clearfix u-header u-header" id="sec-1338">
+    <header class="u-clearfix u-header u-header u-palette-1-base" id="sec-1338">
+            <%# <div class="u-palette-1-base u-shape"> %>
+      <%# </div> %>
       <div class="u-clearfix u-sheet u-sheet-1">
-        <h3 class="u-headline u-text u-text-default u-text-1">
+        <h1 class="u-custom-font u-font-raleway u-text u-title u-align-center">PLANXT</h1>
 
-        </h3>
               <% flash.each do |type, msg| %>
                       <div class="alert_info">
                         <%= msg %>
                       </div>
                     <% end %>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
-
+        
           <div class="u-custom-menu u-nav-container">
                           <% if Current.user %>
                 Logged in as: <%= Current.user.name %><br>
