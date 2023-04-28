@@ -2,7 +2,13 @@ Feature: password
   As an existing user
   I need to be able to edit and update password
   The app should be able to log me in
-    
+
+  Background: users in database
+
+  Given the following users exist:
+  | name        | email               | password     | 
+  | user1       | user1@email.com     | abc          |   
+  
     Scenario: update and edit password
   		Given I am on the sign-up page
   		Then I should see "Sign Up"
@@ -15,9 +21,10 @@ Feature: password
   		Then I should see "Edit Password"
 		And I click "Edit Password"
   		Then I should see "Logged in as"
-		Then I should see "Password"
-		#And I fill in "Password" with "admin2"
-		#And I fill in "Password confirmation" with "admin2"
+		Then I should see "Edit Password"
+		Then I should see "Password confirmation"
+		#And I fill in "password:" with "admin2"
+		#And I fill in "password_confirmation" with "admin2"
 		And I press "Update"
 		Then I should see "Password Updated"
     
@@ -27,6 +34,6 @@ Feature: password
 		Then I should see "Forgot your password?"
 		And I click "Forgot your password"
 		Then I should see "Forgot your password?"
-		And I fill in "email" with "admin"
+		And I fill in "email" with "user1@email.com"
 		And I press "Reset Password"
-		#Then I should see "Please check your email to reset the password"
+		Then I should see "Please check your email to reset the password"

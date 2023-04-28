@@ -1,3 +1,19 @@
+Given(/the following users exist/) do |user_table|
+  user_table.hashes.each do |user|
+    User.create user
+  end
+end
+
+Given(/the following plan exist/) do |plan_table|
+  plan_table.hashes.each do |plan|
+    plan1 = PlanModel.create plan
+    #PlanModel.show plan1.id
+    #PlanModel.import plan1
+    visit edit_admin_path(plan1)
+  end
+end
+
+
 Given('I am on the home page') do
   #pending # Write code here that turns the phrase above into concrete actions
   Article.create!()

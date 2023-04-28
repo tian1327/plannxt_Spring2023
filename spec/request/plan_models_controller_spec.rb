@@ -11,6 +11,7 @@ RSpec.describe PlanModelsController, type: :controller do
                                              
     end
   end
+
   describe 'destroy' do
     it 'destroy eventstep with valid parameters' do
       model1 = PlanModel.create( name: 'demo')
@@ -19,6 +20,7 @@ RSpec.describe PlanModelsController, type: :controller do
       get :destroy, params: { id: model1.id}
     end
   end
+
 
   describe 'update' do
     it 'update planmodel with valid parameters' do
@@ -29,6 +31,7 @@ RSpec.describe PlanModelsController, type: :controller do
       get :update, params: { id: model1.id}
     end
   end
+
 
   
 end
