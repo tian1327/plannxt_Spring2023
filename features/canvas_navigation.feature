@@ -2,22 +2,20 @@ Feature: Canvas page navigation
   As a user
   I need to see the list of my plans
   The canvas page should have navigation that allows me to see the list of my plans
+  
+  Background: users in database
+
+  Given the following users exist:
+  | name        | email               | password     | 
+  | user1       | user1@email.com     | abc          |  
 
 	Scenario: canvas page navigation
-	  	#Given I am on the sign-in page
-	  	#Then I should see "Sign In"
-		#And I fill in "email_username" with "admin"
-		#And I fill in "password" with "admin"
-		#And I press "submit"
-		#Then I should see "Logged in successfully"
-		Given I am on the sign-up page
-  		Then I should see "Sign Up"
-  		And I fill in "name" with "admin1"
-  		And I fill in "email" with "admin1@gmail.com"
-  		And I fill in "password" with "admin1"
-  		And I fill in "password_confirmation" with "admin1"
-  		And I press "Sign Up"
-  		Then I should see "Successfully created account! Automatically logged in!"
+	  	Given I am on the sign-in page
+	  	Then I should see "Sign In"
+		And I fill in "email_username" with "user1@email.com"
+		And I fill in "password" with "abc"
+		And I press "submit"
+		Then I should see "Logged in successfully"
   		Then I should see "Create a new plan"
 		And I click "Create a new plan"
   		Then I should see "Add Steps"

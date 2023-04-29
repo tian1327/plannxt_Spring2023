@@ -15,6 +15,4 @@ RSpec.describe RegistrationsController, type: :controller do
       expect(flash[:notice]).to match("Create account failed! Name can't be blank.")
     end
   end
-
-
 end
