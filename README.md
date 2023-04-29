@@ -92,6 +92,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * Migrate database on Heroku, `heroku run rake db:schema:load db:migrate`
   * App is deployed to Heroku, go to the website and test it out
 
+
 <br/>
 
 * In case the App is not working correctly in Heroku
