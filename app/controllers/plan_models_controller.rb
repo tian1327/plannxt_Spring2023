@@ -8,19 +8,18 @@ class PlanModelsController < ApplicationController
     @user = User.all
     #render json: @plan_model.to_json
   end
-  '''
+  
   def show
     @plan_model = PlanModel.find(params[:id])
     #render json: @plan_model.to_json
   end
-  '''
+
   
-  '''
   def show_json
     @plan_model = PlanModel.find(params[:id])
     render json: {error_code:0,  data:@plan_model}
   end
-  '''
+
   
   def new
     @plan_model = PlanModel.new
@@ -121,7 +120,6 @@ class PlanModelsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-  '''
   def create_json
     @plan_model = PlanModel.new(plan_model_data)
     logger.info @plan_model.data
@@ -131,7 +129,7 @@ class PlanModelsController < ApplicationController
       render json: {error_code:1,  data:@plan_model}
     end
   end
-  '''
+  
   '''
   def edit_admin
     @plan_model = PlanModel.find(params[:id])
@@ -167,7 +165,7 @@ class PlanModelsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end
-  '''
+
   def update_json
     @plan_model = PlanModel.find(params[:id])
     # logger.info params[:plan_model]
@@ -178,7 +176,7 @@ class PlanModelsController < ApplicationController
       render json: {error_code:1,  data:@plan_model}
     end
   end
-  '''
+
   
   def destroy
     @plan_model = PlanModel.find(params[:id])

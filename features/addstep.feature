@@ -90,6 +90,13 @@ Feature: addstep
 		Then I should see "Manage"
 		And I click "Manage"
 		Then I should see "Add Steps"
+		And I fill in "Plan Name" with "demo1"
+		And I press "OPEN PLAN TEMPLATE"
+		Then I should see "Furniture"
+		Then I should see "Save"
+		And I press "Save"
+		Then I should see "Check Dependency"
+		And I press "Check Dependency"
 		
 	Scenario: plan model page plan copy
   		Given I am on the sign-in page
@@ -146,4 +153,6 @@ Feature: addstep
 		And I fill in "Share with" with "user3"
 		And I press "Share with user"
 		Then I should see "User not found"
+
+
 	

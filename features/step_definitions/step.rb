@@ -7,9 +7,7 @@ end
 Given(/the following plan exist/) do |plan_table|
   plan_table.hashes.each do |plan|
     plan1 = PlanModel.create plan
-    #PlanModel.show plan1.id
-    #PlanModel.import plan1
-    visit edit_admin_path(plan1)
+    
   end
 end
 
@@ -55,6 +53,7 @@ Given('I am on the canvas page') do
   # visit "/login"
   # visit "plan_models/:id/draw_panel"
 end
+
 
 Given('I am on the sign-up page') do
   visit 'sign_up/'
