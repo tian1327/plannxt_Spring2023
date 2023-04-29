@@ -78,7 +78,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
 * Now, the App is deployed to the FashioNXT Heroku Account
   * You can link you cloned git repo to the Heroku Account using `heroku git:remote -a example-app` or following instructions given [here](https://devcenter.heroku.com/articles/git#for-an-existing-app)
   * You may need to log in to Heroku first. Contact the client asking for the username and password. You will probably need 2-factor authentication.
-
+* You can push your new commits from the Git to Heroku git repo by `git push heroku main`, the App will automatically be rebuilt to reflect the changes.
 * You can check Heroku production logs to analyze bugs using `heroku logs`
 
 <br/>
