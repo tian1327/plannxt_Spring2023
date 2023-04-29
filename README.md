@@ -4,10 +4,17 @@
 
 [[Deployed App on Heroku](https://planxt.herokuapp.com/)]
 
+[[FashioNXT Git Repo](https://github.com/FashioNXT/planxt)]
+
+[[Final Presentation and Demo]()]
+
+[[Final Report]()]
+
+
 
 Instructions given below are based on Cloud9 environment. However, you can use your own machine for develop and testing. The app is deployed on Heroku for production.
 
-### To run in development environment
+### To run App in development environment
 
 * Install ruby-3.2.0 using Ruby version manager
   * `rvm get stable`
@@ -20,7 +27,7 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * PostgreSQL may require to create a role to allow rails to connect to the Postgre database. In AWS cloud9 ubuntu system, we executed `sudo -u postgres createuser --interactive ubuntu`
 
 * Clone the latest git repo
-  * `git clone https://github.com/tian1327/plannxt_Spring2023.git`
+  * `git clone https://github.com/FashioNXT/planxt`
 
 * Bundle install
   * `bundle install`
@@ -36,9 +43,9 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * `rails server`
 
 * To preview the web app in Cloud9
-  * Click preview, most likely you will get “IP address mismatch” error
-  * Open file `/config/environments/development.rb`, add/update `config.hosts << "YOUR_ADDRESS"`, you can find "YOUR_ADDRESS" from the Cloud9 prompt
-  * Run `rails server`
+  * Click preview, open in new tab
+  * If you will get “IP address mismatch” error, open file `/config/environments/development.rb`, add/update `config.hosts << "YOUR_ADDRESS"`, you can find "YOUR_ADDRESS" from the error message
+  * Run `rails server` again to start app
   * Click preview, and click upper right to open a new browser tab to view the app
 
 
@@ -54,23 +61,29 @@ Instructions given below are based on Cloud9 environment. However, you can use y
   * `RAILS_ENV=production rake db:schema:load DISABLE_DATABASE_ENVIRONMENT_CHECK=1`
   * `RAILS_ENV=production rake db:migrate db:seed`
 
-* set `config.public_file_server.enabled = true` in file `config/environments/production.rb`
+* Make sure to set `config.public_file_server.enabled = true` in file `config/environments/production.rb`
 * Run `RAILS_ENV=production rails assets:precompile`
 * Start production server `RAILS_ENV=production rails s`
 
-<br/>
-
-* In case of other bugs, check `log/production.log` 
+* In case of bugs, you can check error messages in `log/production.log` 
 
 ### To deploy in production environment (Heroku)
 
 * Commit all your finished updates to the code, and push to the git repo 
-* Prepare rails production environment as above
+* Prepare rails production environment as shown above
 
 * Install Heroku CLI
   * `npm install -g heroku`
 
-* Deploy to Heroku
+* Now, the App is deployed to the FashioNXT Heroku Account
+  * You can link you cloned git repo to the Heroku Account using `heroku git:remote -a example-app` or following instructions given [here](https://devcenter.heroku.com/articles/git#for-an-existing-app)
+  * You may need to log in to Heroku first. Contact the client asking for the username and password. You will probably need 2-factor authentication.
+
+* You can check Heroku production logs to analyze bugs using `heroku logs`
+
+<br/>
+
+* If you want to deploy to personal Heroku account:
   * Register a Heroku account
   * Log into Heroku with `heroku login -i`, enter your email
   * If multi-factor authentication is enabled, login the Heroku webpage and get the API key as password to enter in CLI
@@ -100,8 +113,6 @@ RAILS_ENV=test rake cucumber
 
 
 <br/>
-* Some useful Heroku commands
-  * check production logs to analyze bugs `heroku logs`
 
 ---
 **(Content below are from the Team Spring 2022)**
