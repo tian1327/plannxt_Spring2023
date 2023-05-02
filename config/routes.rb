@@ -41,9 +41,7 @@ Rails.application.routes.draw do
   # user sign up and login
   get 'sign_up', to: 'registrations#new'
   post 'sign_up', to: 'registrations#create'
-  get 'sign_in', to: 'sessions#new'
   post 'sign_in', to: 'sessions#create', as: 'log_in'
-  delete 'logout', to: 'sessions#destroy'
   get 'password', to: 'passwords#edit', as: 'edit_password'
   patch 'password', to: 'passwords#update'
   get 'password/reset', to: 'password_resets#new'
@@ -51,6 +49,9 @@ Rails.application.routes.draw do
   get 'password/reset/edit', to: 'password_resets#edit'
   patch 'password/reset/edit', to: 'password_resets#update'
   
+  get 'auth/events360/callback', to: 'sessions#create'
+  get 'sign_in', to: 'sessions#new'
+  delete 'logout', to: 'sessions#destroy'
   
   get "plan_models/:id/:name", to: redirect('/frontend/%{name}'), status: 302, name: /.*/
 end
