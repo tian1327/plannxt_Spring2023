@@ -1,3 +1,17 @@
+Given(/the following users exist/) do |user_table|
+  user_table.hashes.each do |user|
+    User.create user
+  end
+end
+
+Given(/the following plan exist/) do |plan_table|
+  plan_table.hashes.each do |plan|
+    plan1 = PlanModel.create plan
+    
+  end
+end
+
+
 Given('I am on the home page') do
   #pending # Write code here that turns the phrase above into concrete actions
   Article.create!()
@@ -40,6 +54,7 @@ Given('I am on the canvas page') do
   # visit "plan_models/:id/draw_panel"
 end
 
+
 Given('I am on the sign-up page') do
   visit 'sign_up/'
 end
@@ -60,4 +75,9 @@ end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|
   fill_in(field, :with => value)
+end
+
+# When I select checkbox
+When(/^I select checkbox "(.*?)"$/) do |cb|
+  check(cb)
 end

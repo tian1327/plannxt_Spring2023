@@ -12,29 +12,21 @@ Feature: sign up
   		And I fill in "password_confirmation" with "admin1"
   		And I press "Sign Up"
   		Then I should see "Successfully created account! Automatically logged in!"
-  		Then I should see "Create a new plan"
-  		
-
-
-
-
-
-
-
-
-# 	Scenario: log in with admin account
-#   		Given I am on the home page
-#   		Then I should see "Plannxt"
-#   		Then I should see the canvas
-#   		Then I should see the item menue
-
-# 	Scenario: View canvas page
-#   		Given I am on the canvas page
-#   		Then I should see "Plannxt"
-#   		Then I should see the canvas
-#   		Then I should see the item menue
-  		
-	# Scenario: Show saved data
-  	# 	Given I have received the saved data
-  	# 	Then I should see event icons on canvas
-
+	
+	Scenario: Log out of account
+  		Given I am on the sign-up page
+  		Then I should see "Sign Up"
+  		And I fill in "name" with "admin1"
+  		And I fill in "email" with "admin1@gmail.com"
+  		And I fill in "password" with "admin1"
+  		And I fill in "password_confirmation" with "admin1"
+  		And I press "Sign Up"
+  		Then I should see "Successfully created account! Automatically logged in!"
+  		Then I should see "Edit Password"
+		And I click "Edit Password"
+  		Then I should see "Logged in as"
+		Then I should see "Password"
+		#And I fill in "Password" with "admin2"
+		#And I fill in "Password confirmation" with "admin2"
+		And I press "Update"
+		Then I should see "Password Updated"

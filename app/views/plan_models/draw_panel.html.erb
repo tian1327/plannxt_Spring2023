@@ -6,7 +6,7 @@
 	<div class="overlay">
 		<div class="overlay-panel overlay-right">
 			<h1>Create a New Plan</h1>
-			<p>Welcome to PLANNXT a tool to setup an event venue – all furniture and staff placements chronologically, and track the actual setup progress real-time.
+			<p>Welcome to PLANXT a tool to setup an event venue – all furniture and staff placements chronologically, and track the actual setup progress real-time.
 				Let’s get started.. </p>				
 				<%= form_with model: @plan_model do |form| %>
 				  <div>
@@ -19,14 +19,18 @@
 				</div>
 			    <table style="width:775px">
 				<tr>
-				  <th style="width:105px"><p5>Start Day</p1>  </th>
-				  <th style="width:80px"><p5>StartTime </p1> </th>
-				  <th style="width:80px"><p5>EndTime  </p1></th>
-				  <th style="width:80px"><p5>Break1Start  </p1></th>
-				  <th style="width:80px"><p5>Break1End  </p1></th>
-				  <th style="width:80px"><p5>Break2Start </p1></th>
-				  <th style="width:80px"><p5>Break2End  </p1></th>
-				  <th style="width:80px"><p5>Delete  </p1></th>
+				  <th rowspan="2" style="width:75px;height: 10px;"><p5>Start Day</p5>  </th>
+				  <th rowspan="2" style="width:55px;height: 10px;"><p5>StartTime </p5> </th>
+				  <th rowspan="2" style="width:55px;height: 10px;"><p5>EndTime  </p5></th>
+				  <th colspan="2" style="width:105px;height: 10px;"><p5>Break1 (Optional)  </p5></th>
+				  <th colspan="2" style="width:105px;height: 10px;"><p5>Break2 (Optional) </p5></th>
+				  <th rowspan="2" style="width:65px;height: 10px;"><p5>Delete  </p5></th>
+				</tr>
+				<tr>
+				  <th><p5>StartTime  </p5></th>
+				  <th><p5>EndTime  </p5></th>
+				  <th><p5>StartTime </p5></th>
+				  <th><p5>EndTime  </p5></th>
 				</tr>
 			    </table>
 				<div>

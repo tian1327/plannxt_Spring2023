@@ -6,7 +6,8 @@ RSpec.describe SessionsController, type: :controller do
     it 'do not allow log in with invalid parameter' do
       user = User.create( name: 'Any Name', email: 'any@email.com', 
                           password: 'password',password_confirmation: 'password' )
-      get :create, params: { email_username: user.email, password: 'random' }
+      get :create, params: { name: 'Any Name', email: 'any@email.com', 
+                             password: 'password'}
       expect(flash[:notice]).to match('Invalid username/email or password')
     end
   end
@@ -18,6 +19,7 @@ RSpec.describe SessionsController, type: :controller do
       get :create, params: { email_username: user.email, password: user.password }
       expect(response.content_type).to eq 'text/html; charset=utf-8'
       expect(flash[:notice]).to match('Logged in successfully')
+      model1 = PlanModel.create( name: 'demo')
     end
   end
 
