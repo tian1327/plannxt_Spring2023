@@ -1246,6 +1246,11 @@ function clickToSave(e){
     putRequest.send(sentJSON);
     return;
 }
+
+function clickToPreview(e) {
+    console.log("preview");
+}
+
 function selectTheTime(){
 
     if (show_all == true){

@@ -39,12 +39,7 @@
                 <button onclick="clickToSave(event);">Save</button>
                 <button onclick="clickToUndo(event);">Undo</button>
                 <button onclick="clickToRedo(event);">Redo</button>
-                <%# route to the dependency page under current plan %>
-                <%# <%= link_to "Set Dependency", "/dependency" %>  
-                <%# <button id='notifyBtn' onclick="clickToCheckDependency(event);">Check Dependency</button>
-                <div id="notification"></div> %>
-
-                <%# <%= link_to "Return to Plans", "/plan_models/" %> 
+                <button> <%= link_to "Preview in 3D", preview_path , target: :_blank %> </button>
             </div>
             
             <div class="col-md-2 dashboard-header">
