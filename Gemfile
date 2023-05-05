@@ -49,6 +49,10 @@ gem "bootsnap", require: false
 gem 'rails_12factor'
 gem 'rails-controller-testing'
 
+gem 'omniauth'
+gem 'omniauth-oauth2', '~> 1.8.0'
+gem "omniauth-rails_csrf_protection"
+
 # Use Sass to process CSS
 # gem "sassc-rails"
 

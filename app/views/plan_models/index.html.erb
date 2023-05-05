@@ -57,18 +57,15 @@
                 <tr style="height: 47px;">
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.name %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= @user.find(plan_model.creator).name %> </td>
-                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.created_at %> </td>
-                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.updated_at %> </td>
+                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.created_at.to_formatted_s(:long) %> </td>
+                  <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell"> <%= plan_model.updated_at.to_formatted_s(:long) %> </td>
                   <td class="u-border-1 u-border-grey-30 u-border-no-left u-border-no-right u-table-cell u-layout-row"> 
-                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit", target: "_blank", :class => " u-layout-cell"%>
-                  <%= link_to "Manage", "#{plan_model_path(plan_model)}/draw_panel", :class => " u-layout-cell"%>
-                  <%= link_to "Export", "#{plan_model_path(plan_model)}/export", target: "_blank", :class => " u-layout-cell"%>
+                  <%= link_to "Edit", "#{plan_model_path(plan_model)}/edit", target: "_blank", :class => " u-layout-cell"%> |
+                  <%= link_to "Manage", "#{plan_model_path(plan_model)}/draw_panel", :class => " u-layout-cell"%> |
+                  <%= link_to "Export", "#{plan_model_path(plan_model)}/export", target: "_blank", :class => " u-layout-cell"%> | 
                   <%= link_to "Share", "#{plan_model_path(plan_model)}/sharing", :class => " u-layout-cell"%>
                   <%= link_to "Copy", "#{plan_model_path(plan_model)}/duplicate" , :class => " u-layout-cell"%>
                   <%= link_to "Delete", "#{plan_model_path(plan_model)}/destroy", :class => " u-layout-cell"%>
-                  <% if Current.user.level.present? and Current.user.level >= 3 %>
-                  <%= link_to "View Raw Data", plan_model %> /
-                  <% end %>
                   </td>
                 </tr>
               <% end %>
