@@ -199,6 +199,8 @@ GEM
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    npm-rails (0.2.1)
+      rails (>= 3.2)
     pg (1.4.6)
     public_suffix (5.0.1)
     puma (5.6.5)
@@ -336,6 +338,7 @@ DEPENDENCIES
   omniauth
   omniauth-oauth2 (~> 1.8.0)
   omniauth-rails_csrf_protection
+  npm-rails (~> 0.2.1)
   pg
   puma (~> 5.0)
   rails (~> 7.0.2, >= 7.0.2.2)

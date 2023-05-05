@@ -40,6 +40,12 @@ RSpec.describe EventStepsController, type: :controller do
     end
   end
 
+  describe 'new' do
+    it "redirects to the event step page and flashes a notice" do
+      event1 = EventStep.new
+    end
+  end
+
   describe 'destroy' do
     it 'eventstep with valid parameters' do
       event1 = EventStep.create( Num: 1, StartDay: "2023-03-01", StartTime: '10:20', EndTime: '10:20', Break1start: '10:20', 
