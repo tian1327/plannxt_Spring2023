@@ -17,25 +17,6 @@ class RegistrationsController < ApplicationController
       end
     end
 
-    # def toggle
-    #   if admin?
-    #     @user = User.find_by(name: params[:user])
-    #     @user.enabled = params[:on] || 0
-    #     @user.save
-    #   else
-    #     redirect_to '/'
-    #   end
-    # end
-
-    # def retrieve
-    #   if admin?
-    #     @user = User.find_by(name: params[:user])
-    #     render json: @user.to_json
-    #   else
-    #     redirect_to '/'
-    #   end
-    # end
-
     private
 
     def user_params
