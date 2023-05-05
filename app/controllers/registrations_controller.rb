@@ -16,7 +16,7 @@ class RegistrationsController < ApplicationController
         redirect_to sign_up_path, notice: 'Create account failed! ' + @user.errors.full_messages.join('; ') + "."
       end
     end
-
+    
     private
 
     def user_params

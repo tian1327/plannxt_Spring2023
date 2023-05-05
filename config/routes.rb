@@ -49,4 +49,6 @@ Rails.application.routes.draw do
   delete 'logout', to: 'sessions#destroy'
   
   get "plan_models/:id/:name", to: redirect('/frontend/%{name}'), status: 302, name: /.*/
+  
+  get 'preview', to: 'preview#index'
 end

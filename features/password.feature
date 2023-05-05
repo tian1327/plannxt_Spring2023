@@ -1,3 +1,4 @@
+
 #Feature: password
 #  As an existing user
 #  I need to be able to edit and update password
@@ -30,3 +31,4 @@
 #		And I fill in "email" with "admin"
 #		And I press "Reset Password"
 #		#Then I should see "Please check your email to reset the password"
+

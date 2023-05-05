@@ -3,7 +3,7 @@ class PasswordResetsController < ApplicationController
     def create
       @user = User.find_by(email: params[:email])
       if @user.present?
-        # send mail
+        # send mail, not implemented yet
         PasswordMailer.with(user: @user).reset.deliver_later
         # deliver_later is provided by ActiveJob
         redirect_to sign_in_path, notice: 'Please check your email to reset the password'
@@ -13,12 +13,16 @@ class PasswordResetsController < ApplicationController
       
     end
       
-    def edit
-      # finds user with a valid token
+
+    def edit #password reset not implemented
+=begin
+      finds user with a valid token
       @user = User.find_signed!(params[:token], purpose: 'password_reset')
       rescue ActiveSupport::MessageVerifier::InvalidSignature
         redirect_to sign_in_path, alert: 'Your token has expired. Please try again.'
+=end
     end
+  
     def update
       # updates user's password
       @user = User.find_signed!(params[:token], purpose: 'password_reset')
