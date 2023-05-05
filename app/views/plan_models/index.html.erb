@@ -72,14 +72,6 @@
 
             </tbody>
           </table>
-          <% if Current.user.name == 'admin' %>
-            <%= form_with url: "/crm/toggle", multipart: true do |f| %>
-              <%= f.label :user, 'Toggle user' %>
-              <%= f.text_field :user, placeholder: 'Name' %>  
-              <%= f.check_box :on %>
-              <%= f.submit 'Enable/Disable' %>
-            <% end %>
-          <% end %>
         </div>
         <h4 class="u-text u-text-default u-text-1"> Total <%= @plan_model.count %> plans</h4>
         <%= link_to "Create a new plan", new_plan_model_path, :class=>"u-btn u-button-style u-btn-1 u-hover-palette-2-base" %>

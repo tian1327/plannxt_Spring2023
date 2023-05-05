@@ -29,7 +29,9 @@
           <div class="u-custom-menu u-nav-container">
                 <% if Current.user && !current_page?('/')%>
                   Logged in as: <%= Current.user.name %>
-                <%# <%= link_to 'Edit Password', edit_password_path %>
+                  <% if !Rails.env.production? %>
+                    <%= link_to 'Edit Password', edit_password_path %>
+                  <% end %>
                   <%= button_to 'Logout', logout_path, method: :delete, class: 'u-btn'%>
                 <% else %>
                   <%# <%= link_to 'Sign Up', '/auth/events360' %>
