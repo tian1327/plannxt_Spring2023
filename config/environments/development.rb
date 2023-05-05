@@ -85,9 +85,7 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  ENV['NXT_APP_ID'] = 'vvxyQoNnhTlO93B8AmwxrreJ2E6zqsSIm12gDv5pEf4'
-  ENV['NXT_APP_SECRET'] = '0kM9AafsZThnknThlJFBoQoX1Ha88j8UOGWq61woxVg'
-  ENV['NXT_APP_URL'] = 'http://127.0.0.1:3000/'
+ 
   
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true

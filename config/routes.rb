@@ -21,10 +21,6 @@ Rails.application.routes.draw do
   get "plan_models/:id/destroy", to: "plan_models#destroy"
   get "plan_models/:id/sharing", to: "plan_models#sharing"
   post "share/:id", to: "plan_models#share"
-
-  post "crm/toggle", to: 'registrations#toggle'
-  get "crm/retrieve/:user", to: 'registrations#retrieve'
-  
   
   # plan_models -> return json
   get "/plan_models_json/:id", to: "plan_models#show_json"
@@ -39,15 +35,14 @@ Rails.application.routes.draw do
   # root "articles#index"
   
   # user sign up and login
-  get 'sign_up', to: 'registrations#new'
-  post 'sign_up', to: 'registrations#create'
-  post 'sign_in', to: 'sessions#create', as: 'log_in'
-  get 'password', to: 'passwords#edit', as: 'edit_password'
-  patch 'password', to: 'passwords#update'
-  get 'password/reset', to: 'password_resets#new'
-  post 'password/reset', to: 'password_resets#create'
-  get 'password/reset/edit', to: 'password_resets#edit'
-  patch 'password/reset/edit', to: 'password_resets#update'
+  # get 'sign_up', to: 'registrations#new'
+  # post 'sign_up', to: 'registrations#create'
+  # get 'password', to: 'passwords#edit', as: 'edit_password'
+  # patch 'password', to: 'passwords#update'
+  # get 'password/reset', to: 'password_resets#new'
+  # post 'password/reset', to: 'password_resets#create'
+  # get 'password/reset/edit', to: 'password_resets#edit'
+  # patch 'password/reset/edit', to: 'password_resets#update'
   
   get 'auth/events360/callback', to: 'sessions#create'
   get 'sign_in', to: 'sessions#new'

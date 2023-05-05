@@ -7,11 +7,19 @@ class User < ApplicationRecord
     validates :email, presence: true, uniqueness: true, format: { with: /\A[^@\s]+@[^@\s]+\z/, message: 'Invalid email' }
 
     def self.from_omniauth(access_token)
-        id = access_token.uid
         data = access_token.info
         email = data['email']
         name = data['name']
+        password = SecureRandom.urlsafe_base64(20).tr('lIO0', 'sxyz')
     
-        User.find_or_create_by(email:, name:, id:)
+        # User.find_or_create_by(email:)
+        where(email: email).first_or_create do |user|
+            user.email          = email
+            user.name           = name
+            user.password = password
+            user.password_confirmation = password
+            # user.initial_access = Time.now
+            # user.last_access    = Time.now
+        end
     end
 end

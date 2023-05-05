@@ -1,7 +1,7 @@
 class PlanModelsController < ApplicationController
   protect_from_forgery with: :null_session
-  before_action :require_authentication
-
+  before_action :require_user_logged_in!
+  
   def index
     logger.info Current.user.id
     @plan_model = PlanModel.where(":user = ANY(viewers) OR :user = creator", user: Current.user.id).order("created_at DESC")

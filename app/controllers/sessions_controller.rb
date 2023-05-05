@@ -20,11 +20,10 @@ class SessionsController < ApplicationController
       #   redirect_to sign_in_path, notice: 'Invalid username/email or password'
       #   #render :new 
       # end
+
       @user = User.from_omniauth(request.env['omniauth.auth'])
-      if @user.persisted?
+      if @user.present?
         session[:user_id] = @user.id
-        @user.updated_at = Time.now
-        user.save
         redirect_to edit_page_path, notice: 'Logged in successfully'
       else
         flash.alert = "User not found."
