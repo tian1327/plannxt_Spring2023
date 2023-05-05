@@ -39,7 +39,15 @@
           <li><h4>Ensure smooth progress via staff management.</h4></li>
           <li><h4>Share your ideas with collaborators.</h4></li>
           <li><h4>Integrate with all other EVENTS 360 applications.</h4></li>
-          <li><a href="/edit_page" class="u-blue u-btn u-button-style u-custom-font u-font-oswald u-hover-palette-2-base u-btn-1">Get Started</a></li>
+          <% if Current.user%>
+            <%= link_to 'Get started', '/edit_page', class: 'u-blue u-btn u-button-style u-custom-font u-font-oswald u-hover-palette-2-base u-btn-1' %>
+          <% else %>
+            <li>
+            <%= form_tag '/auth/events360', method: :post do %>
+              <%= button_tag "Sign in with Events 360", type: :submit, data: { turbo: "false" }, class: 'u-blue u-btn u-button-style u-custom-font u-font-oswald u-hover-palette-2-base u-btn-1' %>
+            <% end %>
+            <li>
+          <% end %>
         </ul>
         </div>
         <div class="u-image u-layout-cell u-right-cell">
