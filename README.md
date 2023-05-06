@@ -6,9 +6,9 @@
 
 [[FashioNXT Git Repo](https://github.com/FashioNXT/planxt)]
 
-[[Final Presentation and Demo]()]
+[[Final Presentation and Demo](https://youtu.be/RV3vojyLnYg)]
 
-[[Final Report]()]
+[[Final Report](documentation/Spring2023/PLANXT_Final_Report.pdf)]
 
 
 
